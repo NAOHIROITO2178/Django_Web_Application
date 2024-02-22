@@ -1,7 +1,10 @@
+from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import View
+from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+
 from .models import Post, Connection
 
 # pk はプライマリキーの略で、データベースの各レコードのユニークな名前です。 Post モデルでプライマリキーを指定しなかったので、
@@ -33,14 +36,14 @@ class DetailPost(LoginRequiredMixin, DetailView):
 
 class CreatePost(LoginRequiredMixin, CreateView):
   model = Post
-  templete_name = 'create.html'
+  template_name = 'create.html'
   fields = ['title', 'content']
   success_url = reverse_lazy('mypost')
   
   def form_valid(self, form):
     """投稿ユーザーをリクエストユーザーと紐付け"""
     form.instance.user = self.request.user
-    return super.form_valid(form)
+    return super().form_valid(form)
 
 class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   model = Post
@@ -87,7 +90,7 @@ class LikeHome(LikeBase):
       return redirect('home')
 
 class LikeDetail(LikeBase):
-  def get(self, request, *args, **kwrags):
+  def get(self, request, *args, **kwargs):
       super().get(request, *args, **kwargs)
       return redirect('detail', pk)
 
@@ -117,7 +120,7 @@ class FollowHome(FollowBase):
 class FollowDetail(FollowBase):
   def get(self, request, *args, **kwargs):
      #FollowBaseでリターンしたobj情報を継承
-    super().get(request, * args, **kwargs)
+    super().get(request, *args, **kwargs)
     pk = self.kwargs['pk']
     #detailにリダイレクト
     return redirect('detail', pk)
@@ -125,7 +128,7 @@ class FollowDetail(FollowBase):
 class FollowList(LoginRequiredMixin, ListView):
    """フォローしたユーザーの投稿をリスト表示"""
    model = Post
-   template = 'list.html'
+   template_name = 'list.html'
 
    def get_queryset(self):
       """フォローリスト内にユーザーが含まれている場合のみクエリセット返す"""
