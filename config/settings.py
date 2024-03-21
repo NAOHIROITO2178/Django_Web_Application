@@ -26,7 +26,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'snsapp.apps.SnsappConfig',  
+    'snsapp.apps.SnsappConfig', 
+    'markdownx', 
     'allauth',                      
     'allauth.account',              
     'allauth.socialaccount',        
@@ -59,6 +60,13 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+MARKDOWNX_UPLOAD_MAX_SIZE = 5 * 1024 * 1024  # 最大5MB
+MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'markdown.extensions.extra',
+    'markdown.extensions.codehilite',
+    'markdown.extensions.toc',
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'

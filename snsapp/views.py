@@ -4,8 +4,9 @@ from django.views import View
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-
-from .models import Post, Connection
+from django import forms
+from .forms import CommentForm  # CommentForm をインポート
+from .models import Post, Connection, Comment
 
 # pk はプライマリキーの略で、データベースの各レコードのユニークな名前です。 Post モデルでプライマリキーを指定しなかったので、
 # Djangoは私たちのために1つのキーを作成し（デフォルトでは、各レコードごとに1ずつ増える数字で、たとえば1、2、3です）、
@@ -70,6 +71,43 @@ class DeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     pk = self.kwargs["pk"]
     post = Post.objects.get(pk=pk)
     return (post.user == self.request.user)
+
+class CreateComment(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'create_comment.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.post = Post.objects.get(pk=self.kwargs['pk'])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('detail', kwargs={'pk': self.kwargs['pk']})
+
+class UpdateComment(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'update_comment.html'
+
+    def get_success_url(self):
+        return reverse_lazy('detail', kwargs={'pk': self.kwargs['pk']})
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.user
+
+class DeleteComment(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'delete_comment.html'
+
+    def get_success_url(self):
+        return reverse_lazy('detail', kwargs={'pk': self.kwargs['pk']})
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.user
+
 
 class LikeBase(LoginRequiredMixin, View):
    """いいねのベース。リダイレクト先を以降で継承先で設定"""
