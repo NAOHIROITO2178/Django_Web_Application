@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
@@ -6,7 +7,13 @@ urlpatterns = [
    path('admin/', admin.site.urls),
    path('accounts/', include('allauth.urls')), 
    path('', include('snsapp.urls')), 
+   path('markdownx/', include('markdownx.urls')), 
 ]
+
+urlpatterns += static(
+    settings.MEDIA_URL,
+    document_root=settings.MEDIA_ROOT
+)
 
 # itounaohiro@itounaohironoMacBook-Pro snsproject % python3 manage.py createsuperuser
 # ユーザー名 (leave blank to use 'itounaohiro'): NI_Django
