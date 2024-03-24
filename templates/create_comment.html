@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method="post">
-    {% csrf_token %}
+<form method="post">{% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">投稿</button>
+    <input type="submit" value="投稿">
 </form>
 {{ form.media }}
 <!-- highlight.js関連の読み込み -->
