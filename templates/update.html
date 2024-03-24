@@ -7,11 +7,13 @@
             <form method="post" class="border p-4">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" class="btn btn-primary mt-3">投稿</button>
+                <button type="submit" class="btn btn-primary mt-3">編集</button>
             </form>
         </div>
     </div>
 </div>
+{{ form.media }}
+
 <!-- highlight.js関連の読み込み -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
