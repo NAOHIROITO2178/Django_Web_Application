@@ -2,10 +2,17 @@
 
 
 {% block content %}
-<form method="post">{% csrf_token %}
-   {{ form.as_p }}
-   <input type="submit" value="投稿">
-</form>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" class="border p-4">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary mt-3">投稿</button>
+            </form>
+        </div>
+    </div>
+</div>
 {{ form.media }}
 <!-- highlight.js関連の読み込み -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css">
