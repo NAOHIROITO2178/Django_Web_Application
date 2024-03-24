@@ -70,7 +70,6 @@ TEMPLATES = [
 MARKDOWNX_UPLOAD_MAX_SIZE = 5 * 1024 * 1024  # 最大5MB
 MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'markdown.extensions.extra',
-    'markdown.extensions.codehilite',
     'markdown.extensions.toc',
 ]
 # 2000, 2000 ぐらいの画像まではリサイズさせない。
