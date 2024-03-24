@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'snsapp.apps.SnsappConfig', 
+    'django.forms',
     'markdownx', 
     'allauth',                      
     'allauth.account',              
@@ -44,6 +45,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',  
 ]
+
+# ウィジェットテンプレートを上書きするための設定
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 ROOT_URLCONF = 'config.urls'
 
@@ -69,6 +73,8 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'markdown.extensions.codehilite',
     'markdown.extensions.toc',
 ]
+# 2000, 2000 ぐらいの画像まではリサイズさせない。
+MARKDOWNX_IMAGE_MAX_SIZE = {'size': (2000, 2000), 'quality': 100}
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
