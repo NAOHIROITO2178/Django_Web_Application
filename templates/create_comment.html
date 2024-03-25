@@ -6,7 +6,10 @@
             <div class="col-md-6">
                 <form method="post" class="border p-4">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                    <div class="form-group">
+                        <label for="id_content">コメント</label>
+                        {{ form.content }}
+                    </div>
                     <button type="submit" class="btn btn-primary mt-3">投稿</button>
                 </form>
             </div>

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
+{% load app %}
 {% load static %}
-
 {% block customcss %}
 <link rel="stylesheet" href="{% static 'style.css' %}">
 {% endblock customcss %}
@@ -10,7 +10,7 @@
   <div class="alert alert-success" role="alert">
       <p>タイトル：{{object.title}}</p>
       <p>投稿者：{{object.user}}</p>
-      <p>コメント：{{ object.content }}</p>
+      <p>投稿内容：{{ object.content | markdown_to_html | safe }}</p>
       
       <!-- 投稿に対するコメント一覧 -->
       
@@ -48,7 +48,7 @@
                                     </div>
                                 {% endif %}
                             </div>
-                            <div>{{ comment.content }}</div>
+                            <div>{{ comment.content | markdown_to_html | safe }}</div>
                         </li>
                     {% endfor %}
                 </ul>
@@ -65,6 +65,8 @@
             </div>
         </div>
     </div>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </div>
 {% endblock content %}
