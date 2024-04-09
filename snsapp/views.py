@@ -6,7 +6,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from django import forms
 from .forms import CommentForm  # CommentForm をインポート
-from .models import Post, Connection, Comment, Hashtag
+from .models import Post, Connection, Comment, Tag
 
 # pk はプライマリキーの略で、データベースの各レコードのユニークな名前です。 Post モデルでプライマリキーを指定しなかったので、
 # Djangoは私たちのために1つのキーを作成し（デフォルトでは、各レコードごとに1ずつ増える数字で、たとえば1、2、3です）、
@@ -40,11 +40,6 @@ class CreatePost(LoginRequiredMixin, CreateView):
   def form_valid(self, form):
     """投稿ユーザーをリクエストユーザーと紐付け"""
     form.instance.user = self.request.user
-    content = form.cleaned_data.get('content')
-    hashtags = [tag.strip("#") for tag in content.split() if tag.startswith("#")]
-    for hashtag_text in hashtags:
-        hashtag, created = Hashtag.objects.get_or_create(name=hashtag_text)
-        self.object.hashtags.add(hashtag)
     return super().form_valid(form)
 
 class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -62,26 +57,6 @@ class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
       pk = self.kwargs["pk"]
       post = Post.objects.get(pk=pk)
       return (post.user == self.request.user)
-    
-  def form_valid(self, form):
-        """フォームの内容が有効かどうかを検証し、更新処理を行う"""
-        # フォームの内容を取得
-        instance = form.instance
-        # ハッシュタグを更新する
-        content = form.cleaned_data.get('content')
-        old_hashtags = instance.hashtags.all()
-        new_hashtags = [tag.strip("#") for tag in content.split() if tag.startswith("#")]
-
-        # 以前のハッシュタグを削除し、新しいハッシュタグを追加する
-        for hashtag in old_hashtags:
-            if hashtag.name not in new_hashtags:
-                instance.hashtags.remove(hashtag)
-        for hashtag_text in new_hashtags:
-            hashtag, created = Hashtag.objects.get_or_create(name=hashtag_text)
-            instance.hashtags.add(hashtag)
-
-        # バリデーションを通過した場合、更新を実行
-        return super().form_valid(form)
 
 class DeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
   model = Post
@@ -201,12 +176,3 @@ class FollowList(LoginRequiredMixin, ListView):
        context = super().get_context_data(*args, **kwargs)
        context['connection'] = Connection.objects.get_or_create(user=self.request.user)
        return context
-
-class HashtagPostListView(ListView):
-  template_name = 'hashtag_posts.html'
-  context_object_name = 'posts'
-
-  def get_queryset(self):
-      hashtag_name = self.kwargs.get('hashtag_name')
-      hashtag = get_object_or_404(Hashtag, name=hashtag_name)
-      return hashtag.posts.all()
