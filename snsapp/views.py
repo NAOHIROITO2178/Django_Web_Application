@@ -120,11 +120,15 @@ class LikeBase(LoginRequiredMixin, View):
 class LikeHome(LikeBase):
   """HOMEページでいいねした場合"""
   def get(self, request, *args, **kwargs):
+      #投稿の特定
+      pk = self.kwargs['pk']
       super().get(request, *args, **kwargs)
       return redirect('home')
 
 class LikeDetail(LikeBase):
   def get(self, request, *args, **kwargs):
+      #投稿の特定
+      pk = self.kwargs['pk']
       super().get(request, *args, **kwargs)
       return redirect('detail', pk)
 
