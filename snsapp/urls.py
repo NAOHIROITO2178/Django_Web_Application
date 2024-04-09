@@ -1,6 +1,6 @@
 
 from django.urls import path
-from snsapp.views import Home, MyPost, CreatePost, DetailPost, UpdatePost, DeletePost, LikeHome, LikeDetail, FollowHome, FollowDetail, FollowList, CreateComment, UpdateComment, DeleteComment                   
+from snsapp.views import Home, MyPost, CreatePost, DetailPost, UpdatePost, DeletePost, LikeHome, LikeDetail, FollowHome, FollowDetail, FollowList, CreateComment, UpdateComment, DeleteComment, TaggedPosts                  
 
 urlpatterns = [
    path('', Home.as_view(), name='home'),             #追加
@@ -17,4 +17,5 @@ urlpatterns = [
    path('comment-create/<int:pk>/', CreateComment.as_view(), name='comment-create'),
    path('comment-update/<int:pk>/', UpdateComment.as_view(), name='comment-update'),
    path('comment-delete/<int:pk>/', DeleteComment.as_view(), name='comment-delete'),
+   path('tag/<str:tag>/', TaggedPosts.as_view(), name='tagged-posts'),
 ]

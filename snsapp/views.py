@@ -40,6 +40,17 @@ class CreatePost(LoginRequiredMixin, CreateView):
   def form_valid(self, form):
     """投稿ユーザーをリクエストユーザーと紐付け"""
     form.instance.user = self.request.user
+    form.save()
+
+    #ハッシュタグの追加
+    content = form.cleaned_data['content']
+    words = content.split()
+    for word in words:
+        if word.startswith('#'):
+            tag_name = word[1:]
+            tag, created = Tag.objects.get_or_create(name=tag_name)
+            form.instance.tag.add(tag)
+    
     return super().form_valid(form)
 
 class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -76,6 +87,14 @@ class CreateComment(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.post = Post.objects.get(pk=self.kwargs['pk'])
+        words = form.cleaned_data["text"].split()
+        for word in words:
+            if word[0] == "#":
+                if Tag.objects.filter(name=word[1:]).exists():
+                    tag = Tag.objects.get(name=word[1:])
+                else:
+                    tag = Tag.objects.create(name=word[1:])
+                post.tag.add(tag)
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -87,6 +106,14 @@ class UpdateComment(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'update_comment.html'
 
     def get_success_url(self):
+        words = form.cleaned_data["text"].split()
+        for word in words:
+            if word[0] == "#":
+                if Tag.objects.filter(name=word[1:]).exists():
+                    tag = Tag.objects.get(name=word[1:])
+                else:
+                    tag = Tag.objects.create(name=word[1:])
+                post.tag.add(tag)
         return reverse_lazy('detail', kwargs={'pk': self.kwargs['pk']})
 
     def test_func(self):
@@ -180,3 +207,12 @@ class FollowList(LoginRequiredMixin, ListView):
        context = super().get_context_data(*args, **kwargs)
        context['connection'] = Connection.objects.get_or_create(user=self.request.user)
        return context
+
+class TaggedPosts(ListView):
+    model = Post
+    template_name = 'tagged_posts.html'
+
+    def get_queryset(self):
+        tag_name = self.kwargs['tag']
+        tag = get_object_or_404(Tag, name=tag_name)
+        return tag.post_set.all()

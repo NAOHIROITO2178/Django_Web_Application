@@ -14,6 +14,10 @@
                     <label for="id_content">本文</label>
                     {{ form.content }}
                 </div>
+                <div class="form-group">
+                    <label for="id_tags">ハッシュタグ (複数の場合はスペースで区切って入力)</label>
+                    <input type="text" name="tags" id="id_tags" class="form-control" value="{{ post_tags }}">
+                </div>
                 <button type="submit" class="btn btn-primary mt-3">編集</button>
             </form>
         </div>

@@ -12,6 +12,16 @@
       <p>投稿者：{{object.user}}</p>
       <p>投稿内容：{{ object.content | markdown_to_html | safe }}</p>
       
+      {% if object.tag.all %}
+      <p>
+        ハッシュタグ:
+        {% for tag in object.tag.all %}
+          <a href="{% url 'tagged-posts' tag.pk %}">#{{ tag.name }}</a>
+          {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </p>
+      {% endif %}
+
       <!-- 投稿に対するコメント一覧 -->
       
       <!-- いいねボタン、フォローボタン、投稿の編集・削除ボタン -->
