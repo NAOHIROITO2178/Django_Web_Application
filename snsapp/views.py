@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import View
 from django.contrib.auth.models import User
@@ -32,42 +32,52 @@ class DetailPost(LoginRequiredMixin, DetailView):
    template_name = 'detail.html'
 
 class CreatePost(LoginRequiredMixin, CreateView):
-  model = Post
-  template_name = 'create.html'
-  fields = ['title', 'content']
-  success_url = reverse_lazy('mypost')
-  
-  def form_valid(self, form):
-    """投稿ユーザーをリクエストユーザーと紐付け"""
-    form.instance.user = self.request.user
-    form.save()
+    model = Post
+    template_name = 'create.html'
+    fields = ['title', 'content']
 
-    #ハッシュタグの追加
-    content = form.cleaned_data['content']
-    words = content.split()
-    for word in words:
-        if word.startswith('#'):
-            tag_name = word[1:]
-            tag, created = Tag.objects.get_or_create(name=tag_name)
-            form.instance.tag.add(tag)
-    
-    return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        instance = form.save()
+
+        # ハッシュタグの追加
+        tags_input = self.request.POST.get('tags', '')  # フォームからハッシュタグの文字列を取得
+        tags_list = tags_input.split()  # スペースで区切ってリストに変換
+        for tag_name in tags_list:
+            if tag_name.startswith('#'):  # ハッシュタグの場合
+                tag_name = tag_name[1:]  # ハッシュタグ記号を削除
+                tag, created = Tag.objects.get_or_create(name=tag_name)
+                instance.tag.add(tag)
+
+        return super().form_valid(form)
+
+    success_url = reverse_lazy('mypost')
 
 class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-  model = Post
-  template_name = 'update.html'
-  fields = ['title', 'content']
+    model = Post
+    template_name = 'update.html'
+    fields = ['title', 'content']
 
-  def get_success_url(self, **kwargs):
-      """編集完了後の遷移先"""
-      pk = self.kwargs["pk"]
-      return reverse_lazy('detail', kwargs={"pk": pk})
-    
-  def test_func(self, **kwargs):
-      """アクセスできるユーザーを制限"""
-      pk = self.kwargs["pk"]
-      post = Post.objects.get(pk=pk)
-      return (post.user == self.request.user)
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+
+        # 既存のタグをクリアして、新しいタグを追加する
+        instance.tag.clear()
+        tags_input = self.request.POST.get('tags', '')  # フォームからハッシュタグの文字列を取得
+        tags_list = tags_input.split()  # スペースで区切ってリストに変換
+        for tag_name in tags_list:
+            if tag_name.startswith('#'):  # ハッシュタグの場合
+                tag_name = tag_name[1:]  # ハッシュタグ記号を削除
+                tag, created = Tag.objects.get_or_create(name=tag_name)
+                instance.tag.add(tag)
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('detail', kwargs={'pk': self.object.pk})
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
 
 class DeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
   model = Post
@@ -214,5 +224,9 @@ class TaggedPosts(ListView):
 
     def get_queryset(self):
         tag_name = self.kwargs['tag']
-        tag = get_object_or_404(Tag, name=tag_name)
+        try:
+            tag = Tag.objects.get(name=tag_name)
+        except Tag.DoesNotExist:
+            raise Http404("Tag does not exist")
+
         return tag.post_set.all()
