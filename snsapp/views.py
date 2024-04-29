@@ -58,26 +58,32 @@ class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'update.html'
     fields = ['title', 'content']
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['selected_tags'] = self.object.tag.all()
+        return context
+    
     def form_valid(self, form):
         instance = form.save(commit=False)
 
         # 既存のタグをクリアして、新しいタグを追加する
         instance.tag.clear()
-        tags_input = self.request.POST.get('tags', '')  # フォームからハッシュタグの文字列を取得
+
+         # 既存のタグの処理
+        tags_input = self.request.POST.get('tags', '')  # 入力フィールドから既存のタグを取得
         tags_list = tags_input.split()  # スペースで区切ってリストに変換
         for tag_name in tags_list:
-            if tag_name.startswith('#'):  # ハッシュタグの場合
-                tag_name = tag_name[1:]  # ハッシュタグ記号を削除
-                tag, created = Tag.objects.get_or_create(name=tag_name)
-                instance.tag.add(tag)
+            tag_name = tag_name.strip('#')  # ハッシュタグ記号を削除
+            tag, created = Tag.objects.get_or_create(name=tag_name)
+            instance.tag.add(tag)
 
         return super().form_valid(form)
 
-    def get_success_url(self):
-        return reverse_lazy('detail', kwargs={'pk': self.object.pk})
-
     def test_func(self):
         return self.get_object().user == self.request.user
+
+    def get_success_url(self):
+        return reverse_lazy('detail', kwargs={'pk': self.object.pk})  # リダイレクト先のURLを指定します
 
 class DeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
   model = Post
