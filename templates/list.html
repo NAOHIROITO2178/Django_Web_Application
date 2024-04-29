@@ -16,7 +16,7 @@
       <p>
         ハッシュタグ:
         {% for tag in item.tag.all %}
-          <a href="{% url 'tagged-posts' tag.pk %}">#{{ tag.name }}</a>
+          <a href="{% url 'tagged-posts' tag.name %}">#{{ tag.name }}</a>
           {% if not forloop.last %}, {% endif %}
         {% endfor %}
       </p>

@@ -1,9 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>Posts tagged with {{ tag_name }}</h1>
+    <h1>#{{ tag.name }}の投稿</h1>
     <ul>
-        {% for post in tagged_posts %}
-            <li>{{ post.title }}</li>
+        {% for item in object_list %}
+        <div class="alert alert-success" role="alert">
+           <p>タイトル：<a href="{% url 'detail' item.pk %}">{{item.title}}</a></p>
+           <p>投稿者：{{item.user.username}}</p>   
+     
+           {% if item.tag.all %}
+           <p>
+             ハッシュタグ:
+             {% for tag in item.tag.all %}
+               <a href="{% url 'tagged-posts' tag.name %}">#{{ tag.name }}</a>
+               {% if not forloop.last %}, {% endif %}
+             {% endfor %}
+           </p>
+           {% endif %}
+     
+           {% if request.user in item.like.all %}
+           <a href="{% url 'like-home' item.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i></a>{{item.like.count}}
+           {% else %}
+           <a href="{% url 'like-home' item.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i></a>{{item.like.count}}
+           {% endif %}
+     
+           {% if item.user in connection.0.following.all %}
+           <a href="{% url 'follow-home' item.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー解除</a>
+           {% else %}
+           <a href="{% url 'follow-home' item.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
+           {% endif %}
+     
+        </div>
         {% endfor %}
     </ul>
 {% endblock %}

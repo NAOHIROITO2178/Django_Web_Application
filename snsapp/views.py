@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django import forms
 from .forms import CommentForm  # CommentForm をインポート
 from .models import Post, Connection, Comment, Tag
-
+from django.http import Http404
 # pk はプライマリキーの略で、データベースの各レコードのユニークな名前です。 Post モデルでプライマリキーを指定しなかったので、
 # Djangoは私たちのために1つのキーを作成し（デフォルトでは、各レコードごとに1ずつ増える数字で、たとえば1、2、3です）、
 # 各投稿に pk というフィールド名で追加します。
