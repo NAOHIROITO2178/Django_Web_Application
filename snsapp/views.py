@@ -236,3 +236,9 @@ class TaggedPosts(ListView):
             raise Http404("Tag does not exist")
 
         return tag.post_set.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag_name = self.kwargs['tag']
+        context['tag_name'] = tag_name
+        return context
