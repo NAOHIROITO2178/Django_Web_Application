@@ -227,6 +227,7 @@ class FollowList(LoginRequiredMixin, ListView):
 class TaggedPosts(ListView):
     model = Post
     template_name = 'tagged_posts.html'
+    context_object_name = 'object_list'
 
     def get_queryset(self):
         tag_name = self.kwargs['tag']
