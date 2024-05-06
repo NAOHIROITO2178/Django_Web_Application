@@ -102,15 +102,14 @@ class CreateComment(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        form.instance.post = Post.objects.get(pk=self.kwargs['pk'])
-        words = form.cleaned_data["text"].split()
+        form.instance.post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        text = form.cleaned_data.get("text", "")  # "text"キーが存在するかチェックして取得
+        words = text.split()        
         for word in words:
-            if word[0] == "#":
-                if Tag.objects.filter(name=word[1:]).exists():
-                    tag = Tag.objects.get(name=word[1:])
-                else:
-                    tag = Tag.objects.create(name=word[1:])
-                post.tag.add(tag)
+            if word.startswith("#"):  # 文字列の先頭が "#" かどうかを確認
+                tag_name = word[1:]  # "#" を取り除いたタグ名
+                tag, created = Tag.objects.get_or_create(name=tag_name)  # 存在しない場合は新規作成
+                form.instance.post.tag.add(tag)
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -122,15 +121,15 @@ class UpdateComment(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'update_comment.html'
 
     def get_success_url(self):
-        words = form.cleaned_data["text"].split()
+        comment = self.object  # フォームのインスタンスを取得
+        text = comment.content  # コメントのテキストを取得
+        words = text.split()
         for word in words:
-            if word[0] == "#":
-                if Tag.objects.filter(name=word[1:]).exists():
-                    tag = Tag.objects.get(name=word[1:])
-                else:
-                    tag = Tag.objects.create(name=word[1:])
-                post.tag.add(tag)
-        return reverse_lazy('detail', kwargs={'pk': self.kwargs['pk']})
+            if word.startswith("#"):
+                tag_name = word[1:]
+                tag, created = Tag.objects.get_or_create(name=tag_name)
+                comment.post.tag.add(tag)  # コメントが属する投稿のタグに追加
+        return reverse_lazy('detail', kwargs={'pk': comment.post.pk})
 
     def test_func(self):
         comment = self.get_object()
