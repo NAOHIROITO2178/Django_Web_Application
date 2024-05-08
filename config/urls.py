@@ -2,12 +2,14 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
+from snsapp.urls import router as snsapp_router
 
 urlpatterns = [
    path('admin/', admin.site.urls),
    path('accounts/', include('allauth.urls')), 
    path('', include('snsapp.urls')), 
    path('markdownx/', include('markdownx.urls')), 
+   path('api/', include(snsapp_router.urls)),
 ]
 
 urlpatterns += static(

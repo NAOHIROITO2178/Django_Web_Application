@@ -6,8 +6,11 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from django import forms
 from .forms import CommentForm  # CommentForm をインポート
+import django_filters
+from rest_framework import viewsets, filters
 from .models import Post, Connection, Comment, Tag
 from django.http import Http404
+from .serializer import PostSerializer, ConnectionSerializer, CommentSerializer, TagSerializer
 # pk はプライマリキーの略で、データベースの各レコードのユニークな名前です。 Post モデルでプライマリキーを指定しなかったので、
 # Djangoは私たちのために1つのキーを作成し（デフォルトでは、各レコードごとに1ずつ増える数字で、たとえば1、2、3です）、
 # 各投稿に pk というフィールド名で追加します。
@@ -242,3 +245,22 @@ class TaggedPosts(ListView):
         tag_name = self.kwargs['tag']
         context['tag_name'] = tag_name
         return context
+
+#ここからAPIのViewSetの定義
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+
+class ConnectionViewSet(viewsets.ModelViewSet):
+    queryset = Connection.objects.all()
+    serializer_class = ConnectionSerializer
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+
+class TagViewSet(viewsets.ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer

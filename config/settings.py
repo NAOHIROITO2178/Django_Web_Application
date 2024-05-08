@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'snsapp.apps.SnsappConfig', 
     'django.forms',
     'markdownx', 
+    'rest_framework',
     'allauth',                      
     'allauth.account',              
     'allauth.socialaccount',        

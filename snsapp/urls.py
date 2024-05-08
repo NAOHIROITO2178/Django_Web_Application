@@ -1,6 +1,14 @@
-
 from django.urls import path
-from snsapp.views import Home, MyPost, CreatePost, DetailPost, UpdatePost, DeletePost, LikeHome, LikeDetail, FollowHome, FollowDetail, FollowList, CreateComment, UpdateComment, DeleteComment, TaggedPosts                  
+from snsapp.views import Home, MyPost, CreatePost, DetailPost, UpdatePost, DeletePost, LikeHome, LikeDetail, FollowHome, FollowDetail, FollowList, CreateComment, UpdateComment, DeleteComment, TaggedPosts, PostViewSet, ConnectionViewSet, CommentViewSet, TagViewSet
+from rest_framework.routers import SimpleRouter
+
+router = SimpleRouter()
+router.register('posts', PostViewSet)
+router.register('connections', ConnectionViewSet)
+router.register('comments', CommentViewSet)
+router.register('tags', TagViewSet)
+
+urlpatterns = router.urls
 
 urlpatterns = [
    path('', Home.as_view(), name='home'),             #追加
