@@ -7,20 +7,21 @@ from .models import Tag, Post, Connection, Comment
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ("name")
+        fields = '__all__' 
+
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ("title", "content", "user", "like", "created_at", "tag")
+        fields ='__all__' 
 
 
 class ConnectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Connection
-        fields = ("user", "following")
+        fields = '__all__' 
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ("content", "post", "user", "created_at")
+        fields = '__all__' 
