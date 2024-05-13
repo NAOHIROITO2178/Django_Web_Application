@@ -7,6 +7,19 @@
 
 {% block content %}
 <div class="container mt-3">
+  <h2 class="text-center mb-4">今日のテックニュース</h2>
+  <div class="row">
+      {% for article in news %}
+      <div class="col-md-3">
+          <div class="alert alert-info" role="alert"> <!-- 背景色を変更 -->
+              <p>タイトル：<a href="{{ article.url }}">{{ article.title }}</a></p>
+              <p>投稿者：{{ article.author }}</p>   
+          </div>
+      </div>
+      {% endfor %}
+  </div>
+
+  <h2>ユーザ投稿一覧</h2>
    {% for item in object_list %}
    <div class="alert alert-success" role="alert">
       <p>タイトル：<a href="{% url 'detail' item.pk %}">{{item.title}}</a></p>

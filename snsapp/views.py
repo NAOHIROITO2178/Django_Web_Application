@@ -10,15 +10,36 @@ import django_filters
 from rest_framework import viewsets, filters
 from .models import Post, Connection, Comment, Tag
 from django.http import Http404
+import requests
 from .serializer import PostSerializer, ConnectionSerializer, CommentSerializer, TagSerializer
 # pk はプライマリキーの略で、データベースの各レコードのユニークな名前です。 Post モデルでプライマリキーを指定しなかったので、
 # Djangoは私たちのために1つのキーを作成し（デフォルトでは、各レコードごとに1ずつ増える数字で、たとえば1、2、3です）、
 # 各投稿に pk というフィールド名で追加します。
 
+def fetch_news():
+    # NewsAPIから日本語のIT・Web業界関連の新しいニュースを取得
+    url = "https://newsapi.org/v2/top-headlines"
+    params = {
+        "country": "jp",
+        "category": "technology",
+        "apiKey": "036575c5614545aba8aa0cb6d40e3b1d"  # ここに自分のAPIキーを入力
+    }
+    response = requests.get(url, params=params)
+    data = response.json()
+    articles = data.get("articles", [])
+    return articles[:4]
+
 class Home(LoginRequiredMixin, ListView):
-   """HOMEページで、すべてのユーザー投稿をリスト表示"""
-   model = Post
-   template_name = 'list.html'
+    """HOMEページで、日本語のIT・Web業界関連の新着ニュースを表示"""
+    model = Post
+    template_name = 'list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # NewsAPIからニュースを取得
+        news = fetch_news()
+        context['news'] = news
+        return context
 
 class MyPost(LoginRequiredMixin, ListView):
    """自分の投稿のみ表示"""
