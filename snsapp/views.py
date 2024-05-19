@@ -5,13 +5,14 @@ from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django import forms
-from .forms import CommentForm  # CommentForm をインポート
+from .forms import CommentForm, SearchForm  # CommentForm をインポート
 import django_filters
 from rest_framework import viewsets, filters
 from .models import Post, Connection, Comment, Tag
 from django.http import Http404
 import requests
 from .serializer import PostSerializer, ConnectionSerializer, CommentSerializer, TagSerializer
+from django.db.models import Q
 # pk はプライマリキーの略で、データベースの各レコードのユニークな名前です。 Post モデルでプライマリキーを指定しなかったので、
 # Djangoは私たちのために1つのキーを作成し（デフォルトでは、各レコードごとに1ずつ増える数字で、たとえば1、2、3です）、
 # 各投稿に pk というフィールド名で追加します。
@@ -265,6 +266,28 @@ class TaggedPosts(ListView):
         context = super().get_context_data(**kwargs)
         tag_name = self.kwargs['tag']
         context['tag_name'] = tag_name
+        return context
+
+class SearchResultsView(ListView):
+    models = Post
+    template_name = 'search_results.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query: 
+            return Post.objects.filter(
+                Q(title__icontains=query) |
+                Q(content__icontains=query) |
+                Q(user__username__icontains=query) |
+                Q(tag__name__icontains=query)
+            ).distinct()
+        else:
+         return Post.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('query')
         return context
 
 #ここからAPIのViewSetの定義

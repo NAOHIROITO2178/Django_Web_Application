@@ -7,6 +7,12 @@
 
 {% block content %}
 <div class="container mt-3">
+    <form method="GET" action="{% url 'search_results' %}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="query" class="form-control" placeholder="検索キーワードを入力" value="{{ request.GET.query }}">
+            <button class="btn btn-primary" type="submit">検索</button>
+        </div>
+    </form>
    {% for item in object_list %}
    <p>タイトル：<a href="#">{{item.author}}</a></p>
    {% endfor %}
