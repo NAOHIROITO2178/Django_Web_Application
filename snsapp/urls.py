@@ -1,5 +1,5 @@
 from django.urls import path
-from snsapp.views import Home, MyPost, CreatePost, DetailPost, UpdatePost, DeletePost, LikeHome, LikeDetail, FollowHome, FollowDetail, FollowList, CreateComment, UpdateComment, DeleteComment, TaggedPosts, PostViewSet, ConnectionViewSet, CommentViewSet, TagViewSet, SearchResultsView
+from snsapp.views import Home, MyPost, CreatePost, DetailPost, UpdatePost, DeletePost, LikeHome, LikeDetail, FollowHome, FollowDetail, FollowList, CreateComment, UpdateComment, DeleteComment, TaggedPosts, PostViewSet, ConnectionViewSet, CommentViewSet, TagViewSet
 from rest_framework.routers import SimpleRouter
 
 router = SimpleRouter()
@@ -12,7 +12,6 @@ urlpatterns = router.urls
 
 urlpatterns = [
    path('', Home.as_view(), name='home'),             #追加
-   path('search/', SearchResultsView.as_view(), name='search_results'),
    path('mypost/', MyPost.as_view(), name='mypost'),  #追加 
    path('detail/<int:pk>/', DetailPost.as_view(), name='detail'),
    path('create/', CreatePost.as_view(), name='create'),
