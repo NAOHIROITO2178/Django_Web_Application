@@ -6,7 +6,8 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from django import forms
 from .forms import CommentForm  # CommentForm をインポート
-from rest_framework import viewsets
+import django_filters
+from rest_framework import viewsets, filters
 from .models import Post, Connection, Comment, Tag
 from django.http import Http404
 import requests
