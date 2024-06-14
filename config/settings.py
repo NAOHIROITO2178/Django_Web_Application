@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     'django.forms',
     'markdownx', 
     'rest_framework',
-    'django_filters',
     'allauth',                      
     'allauth.account',              
     'allauth.socialaccount',        
