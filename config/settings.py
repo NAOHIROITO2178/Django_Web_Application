@@ -34,6 +34,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'account.apps.AccountConfig', # ユーザー認証
+    'allauth',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.apple',
+    'allauth.socialaccount.providers.github',
      
 ]
 
@@ -165,3 +169,30 @@ SITE_ID = 1
 
 LOGIN_URL = 'account:login'          
 LOGIN_REDIRECT_URL = 'article:home'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    'apple': {
+        'APP': {
+            'client_id': 'your-client-id',
+            'key': 'path/to/keyfile.p8',
+            'team_id': 'your-team-id',
+            'key_id': 'your-key-id',
+        }
+    },
+    'github': {
+        'SCOPE': [
+            'user',
+            'repo',
+            'read:org',
+        ],
+    }
+}

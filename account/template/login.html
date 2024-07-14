@@ -18,12 +18,63 @@
             {{ field.errors }}
             <br>
           {% endfor %}
+          <div class="password-container form-group">
+            <!-- パスワードフィールド -->
+            <input type="password" id="password" name="password" class="form-control" placeholder="Password">
+            <span id="view">
+              <!-- 目のアイコン -->
+              <i id="togglePassword" class="far fa-eye-slash"></i>
+            </span>
+          </div>
           <button type="submit" class="btn btn-primary" >ログイン</button>
-          <input type="hidden" name="next" value="{{ next }}" />
+          <input type="hidden" name="next" value="{{ next }}">
+          <a href="{% provider_login_url 'google' %}">Googleでログイン</a><br>
+          <a href="{% provider_login_url 'apple' %}">Appleでログイン</a><br>
+          <a href="{% provider_login_url 'github' %}">GitHubでログイン</a>
           {% csrf_token %}
         </form>
       </div>
     </div>
   </div>
 </div>
+{% endblock %}
+<!-- CSS -->
+{% block css %}
+<style>
+  .password-container {
+    position: relative;
+  }
+
+  #password {
+    padding-right: 30px; /* アイコンの分だけ余白を追加 */
+  }
+
+  #view {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+</style>
+{% endblock %}
+
+<!-- JavaScript -->
+{% block js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+
+    togglePassword.addEventListener('click', function () {
+      // パスワードフィールドのタイプを切り替え
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+
+      // アイコンのクラスを切り替え
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+  });
+</script>
 {% endblock %}
