@@ -198,55 +198,6 @@ class LikeDetail(LikeBase):
       super().get(request, *args, **kwargs)
       return redirect('detail', pk)
 
-class FollowBase(LoginRequiredMixin, View):
-  def get(self, request, *args, **kwargs):
-    # ユーザの特定
-    pk = self.kwargs['pk']
-    target_user = Post.objects.get(pk=pk).user
-    #ユーザー情報よりコネクション情報を取得。存在しなければ作成
-    my_connection = Connection.objects.get_or_create(user=self.request.user)
-    #フォローテーブル内にすでにユーザーが存在する場合
-    if target_user in my_connection[0].following.all():
-       #テーブルからユーザーを削除
-       obj = my_connection[0].following.remove(target_user)
-    else:
-       #テーブルにユーザーを追加
-       obj = my_connection[0].following.add(target_user)
-    return obj
-
-class FollowHome(FollowBase):
-  def get(self, request, *args, **kwargs):
-    #FollowBaseでリターンしたobj情報を継承
-    super().get(request, *args, **kwargs)
-    #homeにリダイレクト
-    return redirect('home')
-      
-class FollowDetail(FollowBase):
-  def get(self, request, *args, **kwargs):
-     #FollowBaseでリターンしたobj情報を継承
-    super().get(request, *args, **kwargs)
-    pk = self.kwargs['pk']
-    #detailにリダイレクト
-    return redirect('detail', pk)
-
-class FollowList(LoginRequiredMixin, ListView):
-   """フォローしたユーザーの投稿をリスト表示"""
-   model = Post
-   template_name = 'list.html'
-
-   def get_queryset(self):
-      """フォローリスト内にユーザーが含まれている場合のみクエリセット返す"""
-      my_connection = Connection.objects.get_or_create(user=self.request.user)
-      all_follow = my_connection[0].following.all()
-      #投稿ユーザーがフォローしているユーザーに含まれている場合オブジェクトを返す。
-      return Post.objects.filter(user__in=all_follow)
-
-   def get_context_data(self, *args, **kwargs):
-       """コネクションに関するオブジェクト情報をコンテクストに追加"""
-       context = super().get_context_data(*args, **kwargs)
-       context['connection'] = Connection.objects.get_or_create(user=self.request.user)
-       return context
-
 class TaggedPosts(ListView):
     model = Post
     template_name = 'tagged_posts.html'

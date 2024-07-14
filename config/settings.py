@@ -33,9 +33,8 @@ INSTALLED_APPS = [
     'markdownx', 
     'rest_framework',
     'django_filters',
-    'allauth',                      
-    'allauth.account',              
-    'allauth.socialaccount',        
+    'account.apps.AccountConfig', # ユーザー認証
+     
 ]
 
 MIDDLEWARE = [
@@ -164,14 +163,5 @@ ACCOUNT_EMAIL_REQUIRED = True
 
 SITE_ID = 1 
 
-LOGIN_REDIRECT_URL = 'home'          
-ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = config('SENDGRID_API_KEY')  # 環境変数から読み込む
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')  # 環境変数から読み込む
-
+LOGIN_URL = 'account:login'          
+LOGIN_REDIRECT_URL = 'article:home'
