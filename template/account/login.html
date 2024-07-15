@@ -18,19 +18,9 @@
             {{ field.errors }}
             <br>
           {% endfor %}
-          <div class="password-container form-group">
-            <!-- パスワードフィールド -->
-            <input type="password" id="password" name="password" class="form-control" placeholder="Password">
-            <span id="view">
-              <!-- 目のアイコン -->
-              <i id="togglePassword" class="far fa-eye-slash"></i>
-            </span>
-          </div>
           <button type="submit" class="btn btn-primary" >ログイン</button>
           <input type="hidden" name="next" value="{{ next }}">
-          <a href="{% provider_login_url 'google' %}">Googleでログイン</a><br>
-          <a href="{% provider_login_url 'apple' %}">Appleでログイン</a><br>
-          <a href="{% provider_login_url 'github' %}">GitHubでログイン</a>
+          
           {% csrf_token %}
         </form>
       </div>

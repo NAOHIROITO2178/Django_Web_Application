@@ -29,16 +29,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'snsapp.apps.SnsappConfig', 
+    'account.apps.AccountConfig', # ユーザー認証
     'django.forms',
     'markdownx', 
     'rest_framework',
     'django_filters',
-    'account.apps.AccountConfig', # ユーザー認証
-    'allauth',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.apple',
-    'allauth.socialaccount.providers.github',
-     
 ]
 
 MIDDLEWARE = [
@@ -49,7 +44,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',  
 ]
 
 # ウィジェットテンプレートを上書きするための設定
@@ -60,7 +54,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'template')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -156,43 +150,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTHENTICATION_BACKENDS = (
    'django.contrib.auth.backends.ModelBackend',
-   'allauth.account.auth_backends.AuthenticationBackend',  
 )
-
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
-ACCOUNT_USERNAME_REQUIRED = True 
-
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_EMAIL_REQUIRED = True 
 
 SITE_ID = 1 
 
 LOGIN_URL = 'account:login'          
 LOGIN_REDIRECT_URL = 'article:home'
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    },
-    'apple': {
-        'APP': {
-            'client_id': 'your-client-id',
-            'key': 'path/to/keyfile.p8',
-            'team_id': 'your-team-id',
-            'key_id': 'your-key-id',
-        }
-    },
-    'github': {
-        'SCOPE': [
-            'user',
-            'repo',
-            'read:org',
-        ],
-    }
-}

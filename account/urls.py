@@ -12,7 +12,7 @@ urlpatterns = [
     path('signup_done/', views.SignupDone.as_view(), name='signup_done'), # サインアップ完了
     path('password_change/', views.PasswordChange.as_view(), name='password_change'), # パスワード変更
     path('password_change_done/', views.PasswordChangeDone.as_view(), name='password_change_done'), # パスワード変更完了
-    path('follow-home/<int:pk>/', FollowHome.as_view(), name='follow-home'),
-    path('follow-detail/<int:pk>/', FollowDetail.as_view(),name='follow-detail'),
-    path('follow-list/', FollowList.as_view(), name='follow-list'),
+    path('follow-home/<int:pk>/', views.FollowHome.as_view(), name='follow-home'),
+    path('follow-detail/<int:pk>/', views.FollowDetail.as_view(),name='follow-detail'),
+    path('follow-list/', views.FollowList.as_view(), name='follow-list'),
 ]

@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from .views import PostViewSet, ConnectionViewSet, CommentViewSet, TagViewSet, Home, MyPost, DetailPost, CreatePost, UpdatePost, DeletePost, LikeHome, LikeDetail, CreateComment, UpdateComment, DeleteComment, TaggedPosts
 from rest_framework.routers import SimpleRouter
 
 router = SimpleRouter()
@@ -12,7 +12,7 @@ urlpatterns = router.urls
 
 app_name ='article'
 
-urlpatterns = [
+urlpatterns += [
    path('home/', Home.as_view(), name='home'),      
    path('mypost/', MyPost.as_view(), name='mypost'),   
    path('detail/<int:pk>/', DetailPost.as_view(), name='detail'),

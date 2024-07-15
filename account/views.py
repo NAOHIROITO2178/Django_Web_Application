@@ -1,10 +1,17 @@
 from django.shortcuts import render, redirect, resolve_url # 追加
 from django.views import generic
-from django.contrib.auth.views import LoginView, LogoutView # 追加
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView # 追加
 from django.contrib.auth import get_user_model # 追加
 from django.contrib.auth.mixins import UserPassesTestMixin # 追加
-from .forms import LoginForm, SignupForm, UserUpdateForm # 追加
+from .forms import LoginForm, SignupForm, UserUpdateForm, MyPasswordChangeForm # 追加
 from django.urls import reverse_lazy # 追加　遅延評価用
+from django.contrib.auth import get_user_model # 追加
+from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views import View
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from snsapp.models import Post
+
 # Create your views here.
 
 class Login(LoginView):
