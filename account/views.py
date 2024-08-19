@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from snsapp.models import Post
+from snsapp.models import Post, Connection
 
 # Create your views here.
 
@@ -123,7 +123,7 @@ class FollowDetail(FollowBase):
 class FollowList(LoginRequiredMixin, ListView):
    """フォローしたユーザーの投稿をリスト表示"""
    model = Post
-   template_name = 'list.html'
+   template_name = 'snsapp/list.html'
 
    def get_queryset(self):
       """フォローリスト内にユーザーが含まれている場合のみクエリセット返す"""

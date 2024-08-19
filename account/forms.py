@@ -23,7 +23,7 @@ class SignupForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('last_name', 'first_name', 'email','username', )
+        fields = ('email','username',)
 
     def __init__(self, *args, **kwargs):
 
@@ -34,12 +34,7 @@ class SignupForm(UserCreationForm):
 
             # オートフォーカスとプレースホルダーの設定
             print(field.label)
-            if field.label == '姓':
-                field.widget.attrs['autofocus'] = '' # 入力可能状態にする
-                field.widget.attrs['placeholder'] = '田中'
-            elif field.label == '名':
-                field.widget.attrs['placeholder'] = '一郎'
-            elif field.label == 'メールアドレス':
+            if field.label == 'メールアドレス':
                 field.widget.attrs['placeholder'] = '***@gmail.com'
 
 '''ユーザー情報更新用フォーム'''
@@ -47,7 +42,7 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('last_name', 'first_name', 'email', 'username',)
+        fields = ('email', 'username',)
 
     # bootstrap4対応
     def __init__(self, *args, **kwargs):

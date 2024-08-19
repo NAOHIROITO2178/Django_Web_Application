@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostViewSet, ConnectionViewSet, CommentViewSet, TagViewSet, Home, MyPost, DetailPost, CreatePost, UpdatePost, DeletePost, LikeHome, LikeDetail, CreateComment, UpdateComment, DeleteComment, TaggedPosts
+from .views import PostViewSet, ConnectionViewSet, CommentViewSet, TagViewSet, Home, MyPost, DetailPost, CreatePost, ConfirmCreatePost, UpdatePost, ConfirmUpdatePost, ConfirmDeletePost, LikeHome, LikeDetail, CreateComment, UpdateComment, DeleteComment, TaggedPosts
 from rest_framework.routers import SimpleRouter
 
 router = SimpleRouter()
@@ -17,8 +17,10 @@ urlpatterns += [
    path('mypost/', MyPost.as_view(), name='mypost'),   
    path('detail/<int:pk>/', DetailPost.as_view(), name='detail'),
    path('create/', CreatePost.as_view(), name='create'),
+   path('create_confirm/<int:pk>/', ConfirmCreatePost.as_view(), name='confirm_create'),
    path('detail/<int:pk>/update/', UpdatePost.as_view(), name='update'),
-   path('detail/<int:pk>/delete/', DeletePost.as_view(), name='delete'),
+   path('detail/<int:pk>/update_confirm/', ConfirmUpdatePost.as_view(), name='confirm_update'),
+   path('detail/<int:pk>/delete_confirm/', ConfirmDeletePost.as_view(), name='confirm_delete'),
    path('like-home/<int:pk>/', LikeHome.as_view(), name='like-home'),
    path('like-detail/<int:pk>/', LikeDetail.as_view(), name='like-detail'),
    path('comment-create/<int:pk>/', CreateComment.as_view(), name='comment-create'),

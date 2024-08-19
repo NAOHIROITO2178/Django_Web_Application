@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block customcss %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock customcss %}
+
+{% block content %}
+<div class="container mt-3">
+  <div class="row">
+      {% for article in news %}
+      <div class="col-md-3">
+          <div class="alert alert-info" role="alert"> <!-- 背景色を変更 -->
+              <h5><b>今日のテックニュース</b></h5>
+              <p>タイトル：<a href="{{ article.url }}">{{ article.title }}</a></p>
+              <p>投稿者：{{ article.author }}</p>   
+          </div>
+      </div>
+      {% endfor %}
+  </div>
+
+  <h2>ユーザ投稿一覧</h2>
+  <div class="row">
+    {% for item in object_list %}
+    <div class="col-md-3">
+      <div class="alert alert-success" role="alert">
+         <p>タイトル：<a href="{% url 'article:detail' item.pk %}">{{item.title}}</a></p>
+         <p>投稿者：{{item.user.username}}</p>   
+   
+         {% if item.tag.all %}
+         <p>
+           ハッシュタグ:
+           {% for tag in item.tag.all %}
+             <a href="{% url 'article:tagged-posts' tag.name %}">#{{ tag.name }}</a>
+             {% if not forloop.last %}, {% endif %}
+           {% endfor %}
+         </p>
+         {% endif %}
+   
+         {% if request.user in item.like.all %}
+         <a href="{% url 'like-home' item.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i></a>{{item.like.count}}
+         {% else %}
+         <a href="{% url 'like-home' item.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i></a>{{item.like.count}}
+         {% endif %}
+   
+         {% if item.user in connection.0.following.all %}
+         <a href="{% url 'follow-home' item.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー解除</a>
+         {% else %}
+         <a href="{% url 'follow-home' item.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
+         {% endif %}
+   
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2>投稿確認</h2>
+            <div class="border p-4 mt-4">
+                <h4>タイトル:</h4>
+                <p>{{ post.title }}</p>
+                <h4>本文:</h4>
+                <p>{{ post.content }}</p>
+                <h4>ハッシュタグ:</h4>
+                <p>
+                    {% for tag in post.tag.all %}
+                        #{{ tag.name }}
+                    {% endfor %}
+                </p>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'create_post' %}" class="btn btn-secondary">戻る</a>
+                <a href="{% url 'mypost' %}" class="btn btn-primary">投稿を確認</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

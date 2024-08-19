@@ -75,6 +75,14 @@ class CreatePost(LoginRequiredMixin, CreateView):
 
         return super().form_valid(form)
 
+class ConfirmCreatePost(LoginRequiredMixin, CreateView):
+    template_name = 'confirm_create.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post'] = Post.objects.get(pk=self.kwargs['pk'])
+        return context
+
     success_url = reverse_lazy('mypost')
 
 class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -109,15 +117,33 @@ class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('detail', kwargs={'pk': self.object.pk})  # リダイレクト先のURLを指定します
 
-class DeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-  model = Post
-  template_name = 'delete.html'
-  success_url = reverse_lazy('mypost')
+class ConfirmUpdatePost(LoginRequiredMixin, UpdateView):
+    template_name = 'confirm_update.html'
 
-  def test_func(self, **kwargs):
-    pk = self.kwargs["pk"]
-    post = Post.objects.get(pk=pk)
-    return (post.user == self.request.user)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post'] = Post.objects.get(pk=self.kwargs['pk'])
+        return context
+
+class ConfirmDeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    template_name = 'confirm_delete.html'
+    success_url = reverse_lazy('mypost')
+
+    def test_func(self, **kwargs):
+        pk = self.kwargs["pk"]
+        post = Post.objects.get(pk=pk)
+        return post.user == self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post'] = Post.objects.get(pk=self.kwargs['pk'])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if "confirm" in request.POST:
+            return self.delete(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
 class CreateComment(LoginRequiredMixin, CreateView):
     model = Comment
