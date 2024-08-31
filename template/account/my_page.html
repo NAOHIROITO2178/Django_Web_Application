@@ -10,18 +10,11 @@
   <div class="row">
     <div class="col"><h4>■　登録情報</h4></div>
     <div class="col text-right"><a href="{% url 'account:user_update' user.pk %}">更新</a></div>
+    <div class="col text-right"><a href="{% url 'account:password_change' %}">パスワードの更新</a></div>
     <!-- 後で更新ボタン追加 -->
   </div>
   <table class="table table-bordered">
     <tbody>
-      <tr>
-        <td style="width: 50%;">姓</td>
-        <td style="width: 50%;">{{ user.last_name }}</td>
-      </tr>
-      <tr>
-        <td>名</td>
-        <td>{{ user.first_name }}</td>
-      </tr>
       <tr>
         <td>メールアドレス</td>
         <td>{{ user.email }}</td>
@@ -29,21 +22,6 @@
       <tr>
         <td>ユーザー名</td>
         <td>{{ user.username }}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- パスワード -->
-  <div class="row mt-4">
-    <div class="col"><h4>■　パスワード</h4></div>
-    <div class="col text-right"><a href="{% url 'account:password_change' %}">更新</a></div>
-    <!-- 後で更新ボタン追加 -->
-  </div>
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td style="width: 50%;">パスワード</td>
-        <td style="width: 50%;">{{ user.password }}</td>
       </tr>
     </tbody>
   </table>

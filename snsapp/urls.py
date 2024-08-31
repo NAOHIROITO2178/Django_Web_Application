@@ -10,7 +10,7 @@ router.register('tags', TagViewSet)
 
 urlpatterns = router.urls
 
-app_name ='article'
+app_name ='snsapp'
 
 urlpatterns += [
    path('home/', Home.as_view(), name='home'),      

@@ -18,6 +18,9 @@ class Login(LoginView):
     form_class = LoginForm
     template_name = 'account/login.html'
 
+    def get_success_url(self):
+        return reverse_lazy('snsapp:home')
+
 '''追加'''
 class Logout(LogoutView):
     template_name = 'account/logout_done.html'

@@ -2,7 +2,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import View
 from django.contrib.auth.models import User
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
 from django import forms
 from .forms import CommentForm  # CommentForm をインポート
@@ -32,7 +32,7 @@ def fetch_news():
 class Home(LoginRequiredMixin, ListView):
     """HOMEページで、日本語のIT・Web業界関連の新着ニュースを表示"""
     model = Post
-    template_name = 'list.html'
+    template_name = 'snsapp/list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -44,7 +44,7 @@ class Home(LoginRequiredMixin, ListView):
 class MyPost(LoginRequiredMixin, ListView):
    """自分の投稿のみ表示"""
    model = Post
-   template_name = 'list.html'
+   template_name = 'snsapp/list.html'
 
    def get_queryset(self):
      #自分の投稿に限定
@@ -53,11 +53,11 @@ class MyPost(LoginRequiredMixin, ListView):
 class DetailPost(LoginRequiredMixin, DetailView):
    """投稿詳細ページ"""
    model = Post
-   template_name = 'detail.html'
+   template_name = 'snsapp/detail.html'
 
 class CreatePost(LoginRequiredMixin, CreateView):
     model = Post
-    template_name = 'create.html'
+    template_name = 'snsapp/create.html'
     fields = ['title', 'content']
 
     def form_valid(self, form):
@@ -75,19 +75,22 @@ class CreatePost(LoginRequiredMixin, CreateView):
 
         return super().form_valid(form)
 
-class ConfirmCreatePost(LoginRequiredMixin, CreateView):
-    template_name = 'confirm_create.html'
+    def get_success_url(self):
+        return reverse_lazy('snsapp:confirm_create', kwargs={'pk': self.object.pk})
+
+class ConfirmCreatePost(LoginRequiredMixin, TemplateView):
+    template_name = 'snsapp/confirm_create.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['post'] = Post.objects.get(pk=self.kwargs['pk'])
         return context
 
-    success_url = reverse_lazy('mypost')
+    success_url = reverse_lazy('snsapp:mypost')
 
 class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    template_name = 'update.html'
+    template_name = 'snsapp/update.html'
     fields = ['title', 'content']
 
     def get_context_data(self, **kwargs):
@@ -115,20 +118,22 @@ class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.get_object().user == self.request.user
 
     def get_success_url(self):
-        return reverse_lazy('detail', kwargs={'pk': self.object.pk})  # リダイレクト先のURLを指定します
+        return reverse_lazy('snsapp:confirm_update', kwargs={'pk': self.object.pk})
 
-class ConfirmUpdatePost(LoginRequiredMixin, UpdateView):
-    template_name = 'confirm_update.html'
+class ConfirmUpdatePost(LoginRequiredMixin, TemplateView):
+    template_name = 'snsapp/confirm_update.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['post'] = Post.objects.get(pk=self.kwargs['pk'])
         return context
 
+    success_url = reverse_lazy('snsapp:mypost')
+
 class ConfirmDeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
-    template_name = 'confirm_delete.html'
-    success_url = reverse_lazy('mypost')
+    template_name = 'snsapp/confirm_delete.html'
+    success_url = reverse_lazy('snsapp:mypost')
 
     def test_func(self, **kwargs):
         pk = self.kwargs["pk"]
@@ -148,7 +153,7 @@ class ConfirmDeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class CreateComment(LoginRequiredMixin, CreateView):
     model = Comment
     form_class = CommentForm
-    template_name = 'create_comment.html'
+    template_name = 'snsapp/create_comment.html'
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -168,7 +173,7 @@ class CreateComment(LoginRequiredMixin, CreateView):
 class UpdateComment(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
     form_class = CommentForm
-    template_name = 'update_comment.html'
+    template_name = 'snsapp/update_comment.html'
 
     def get_success_url(self):
         comment = self.object  # フォームのインスタンスを取得
@@ -187,7 +192,7 @@ class UpdateComment(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class DeleteComment(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
-    template_name = 'delete_comment.html'
+    template_name = 'snsapp/delete_comment.html'
 
     def get_success_url(self):
         return reverse_lazy('detail', kwargs={'pk': self.kwargs['pk']})
@@ -226,7 +231,7 @@ class LikeDetail(LikeBase):
 
 class TaggedPosts(ListView):
     model = Post
-    template_name = 'tagged_posts.html'
+    template_name = 'snsapp/tagged_posts.html'
     context_object_name = 'object_list'
 
     def get_queryset(self):
