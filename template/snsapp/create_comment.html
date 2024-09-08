@@ -33,6 +33,7 @@
                         <label for="id_content">コメント</label>
                         {{ form.content }}
                     </div>
+                    <a href="{% url 'snsapp:detail' post.pk %}" class="btn btn-secondary mt-3">戻る</a>
                     <button type="submit" class="btn btn-primary mt-3">投稿</button>
                 </form>
             </div>
