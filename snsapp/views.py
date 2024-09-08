@@ -155,6 +155,11 @@ class CreateComment(LoginRequiredMixin, CreateView):
     form_class = CommentForm
     template_name = 'snsapp/create_comment.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post'] = get_object_or_404(Post, pk=self.kwargs['pk'])  # Postオブジェクトを取得してコンテキストに追加
+        return context
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.post = get_object_or_404(Post, pk=self.kwargs['pk'])
@@ -168,15 +173,36 @@ class CreateComment(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('detail', kwargs={'pk': self.kwargs['pk']})
+        return reverse_lazy('snsapp:confirm_create_comment', kwargs={'pk': self.object.pk})
+
+class ConfirmCreateComment(LoginRequiredMixin, TemplateView):
+    template_name = 'snsapp/confirm_create_comment.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        comment = get_object_or_404(Comment, pk=self.kwargs['pk'])
+        context['post'] = comment.post  # コメントに関連するPostを取得
+        context['comment'] = comment
+        return context
+
+    def get_success_url(self):
+        # pkが正しく渡されているか確認
+        comment = get_object_or_404(Comment, pk=self.kwargs['pk'])
+        return reverse_lazy('detail', kwargs={'pk': comment.post.pk})
 
 class UpdateComment(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
     form_class = CommentForm
     template_name = 'snsapp/update_comment.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        comment = self.get_object()  # 現在のコメントオブジェクトを取得
+        context['post'] = comment.post  # コメントに関連するPostを取得
+        return context
 
     def get_success_url(self):
-        comment = self.object  # フォームのインスタンスを取得
+        comment = self.get_object()  # 現在のコメントオブジェクトを取得
         text = comment.content  # コメントのテキストを取得
         words = text.split()
         for word in words:
@@ -184,18 +210,41 @@ class UpdateComment(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 tag_name = word[1:]
                 tag, created = Tag.objects.get_or_create(name=tag_name)
                 comment.post.tag.add(tag)  # コメントが属する投稿のタグに追加
-        return reverse_lazy('detail', kwargs={'pk': comment.post.pk})
+        return reverse_lazy('snsapp:confirm_update_comment', kwargs={'pk': comment.pk})
 
     def test_func(self):
         comment = self.get_object()
         return self.request.user == comment.user
 
+class ConfirmUpdateComment(LoginRequiredMixin, TemplateView):
+    template_name = 'snsapp/confirm_update_comment.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        comment = get_object_or_404(Comment, pk=self.kwargs['pk'])
+        context['post'] = comment.post  # コメントに関連するPostを取得
+        context['comment'] = comment
+        return context
+
+    def get_success_url(self):
+        # pkが正しく渡されているか確認
+        comment = get_object_or_404(Comment, pk=self.kwargs['pk'])
+        return reverse_lazy('detail', kwargs={'pk': comment.post.pk})
+
 class DeleteComment(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
     template_name = 'snsapp/delete_comment.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        comment = self.get_object()
+        context['post'] = comment.post  # コメントに関連するPostを取得
+        context['comment'] = comment
+        return context
+
     def get_success_url(self):
-        return reverse_lazy('detail', kwargs={'pk': self.kwargs['pk']})
+        comment = self.get_object()
+        return reverse_lazy('detail', kwargs={'pk': comment.post.pk})
 
     def test_func(self):
         comment = self.get_object()

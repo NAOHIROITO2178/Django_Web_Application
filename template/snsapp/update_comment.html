@@ -1,7 +1,29 @@
 {% extends 'base.html' %}
+{% load app %}
+{% load static %}
+{% block customcss %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock customcss %}
 
 {% block content %}
 <div class="container mt-4">
+    <div class="alert alert-success" role="alert">
+        <p>タイトル：{{ post.title }}</p>
+        <p>投稿者：{{ post.user}}</p>
+        <p>投稿内容：{{ post.content | markdown_to_html | safe }}</p>
+        
+        {% if post.tag.all %}
+        <p>
+          ハッシュタグ:
+          {% for tag in post.tag.all %}
+            {% if tag.name %}
+            #{{ tag.name }}
+            {% endif %}
+            {% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+        {% endif %}
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-6">
             <form method="post" class="border p-4">

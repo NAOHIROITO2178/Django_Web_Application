@@ -1,9 +1,29 @@
 {% extends 'base.html' %}
+{% load app %}
+{% load static %}
+{% block customcss %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock customcss %}
 
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    <p>本当に削除してもよろしいですか？</p>
-    <button type="submit">削除する</button>
-</form>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2>削除確認</h2>
+            <div class="border p-4 mt-4">
+                <h4>内容:</h4>
+                <p>{{ comment.content | markdown_to_html | safe }}</p>
+            </div>
+            <div class="mt-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <p>このコメントを削除してもよろしいですか？</p>
+                    <a href="{% url 'snsapp:detail' post.pk %}" class="btn btn-primary">戻る</a>
+                    <button type="submit" class="btn btn-danger">削除する</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
