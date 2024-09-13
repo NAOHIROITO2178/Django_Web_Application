@@ -79,6 +79,14 @@ class UserUpdate(OnlyYouMixin, generic.UpdateView):
         context["process_name"] = "Update"
         return context
 
+    def get_initial(self):
+        # 初期値としてサインアップ時の値をフォームに表示
+        initial = super().get_initial()
+        user = self.get_object()
+        initial['bio'] = user.bio
+        initial['job_title'] = user.job_title
+        return initial
+
 '''パスワード変更'''
 class PasswordChange(PasswordChangeView):
     form_class = MyPasswordChangeForm
