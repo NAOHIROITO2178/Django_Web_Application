@@ -25,6 +25,9 @@ class Login(LoginView):
 class Logout(LogoutView):
     template_name = 'account/logout_done.html'
 
+    def get_success_url(self):
+        return reverse_lazy('account:logout')
+
 '''自分しかアクセスできないようにするMixin(My Pageのため)'''
 class OnlyYouMixin(UserPassesTestMixin):
     raise_exception = True
