@@ -14,6 +14,8 @@ from snsapp.models import Post, Connection
 
 # Create your views here.
 
+User = get_user_model()
+
 class Login(LoginView):
     form_class = LoginForm
     template_name = 'account/login.html'
@@ -102,6 +104,14 @@ class PasswordChange(PasswordChangeView):
 '''パスワード変更完了'''
 class PasswordChangeDone(PasswordChangeDoneView):
     template_name = 'account/password_change_done.html'
+
+class DeleteAccount(LoginRequiredMixin, DeleteView):
+    model = User
+    template_name = "account/delete_account_confirm.html"
+    success_url = reverse_lazy('account:login')
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
 class FollowBase(LoginRequiredMixin, View):
   def get(self, request, *args, **kwargs):

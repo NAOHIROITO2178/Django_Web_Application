@@ -11,6 +11,7 @@
     <div class="col"><h4>■　登録情報</h4></div>
     <div class="col text-right"><a href="{% url 'account:user_update' user.pk %}">更新</a></div>
     <div class="col text-right"><a href="{% url 'account:password_change' %}">パスワードの更新</a></div>
+    <div class="col text-right"><a href="{% url 'account:delete_account' user.pk %}" class="btn btn-danger">アカウントを削除する</a></div>
     <!-- 後で更新ボタン追加 -->
   </div>
   <table class="table table-bordered">

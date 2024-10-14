@@ -15,4 +15,5 @@ urlpatterns = [
     path('follow-home/<int:pk>/', views.FollowHome.as_view(), name='follow-home'),
     path('follow-detail/<int:pk>/', views.FollowDetail.as_view(),name='follow-detail'),
     path('follow-list/', views.FollowList.as_view(), name='follow-list'),
+    path('delete_account/<int:pk>/', views.DeleteAccount.as_view(), name='delete_account')
 ]

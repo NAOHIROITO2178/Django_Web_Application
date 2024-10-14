@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>アカウント削除確認</h2>
+  <p>本当にアカウントを削除してもよろしいですか？この操作は取り消せません。</p>
+  
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">削除</button>
+    <a href="{% url 'account:my_page' user.pk %}" class="btn btn-secondary">キャンセル</a>
+  </form>
+{% endblock %}
