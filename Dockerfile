@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
 COPY . /app/
 
 # ポートの公開
-EXPOSE 8000
+EXPOSE 9000
 
 # ユーザーの作成
 RUN useradd -m myuser
@@ -29,4 +29,4 @@ RUN useradd -m myuser
 USER myuser
 
 # アプリケーションの起動
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:9000"]
