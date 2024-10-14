@@ -20,32 +20,10 @@ class LoginForm(AuthenticationForm):
 
 '''サインアップ用フォーム'''
 class SignupForm(UserCreationForm):
-    bio = forms.CharField(
-        max_length=1000,
-        widget=forms.Textarea(attrs={
-            'class': 'form-control',
-            'placeholder': '自己紹介文を入力してください（1000文字以内）'
-        }),
-        required=False
-    )
-    job_title = forms.ChoiceField(
-        choices=[           
-            ('Non_selected', ''),
-            ('Engineer', 'エンジニア'),
-            ('Designer', 'デザイナー'),
-            ('Marketer', 'マーケター'),
-            ('Director', 'ディレクター'),
-            ('Sales', '営業'),
-            ('CxO', 'CxO'),
-            ('Other', 'その他')
-        ],
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        required=False
-    )
 
     class Meta:
         model = User
-        fields = ('email','username', 'bio', 'job_title')
+        fields = ('email','username')
 
     def __init__(self, *args, **kwargs):
 
