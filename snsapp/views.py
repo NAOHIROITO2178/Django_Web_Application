@@ -78,7 +78,7 @@ class ConfirmCreatePost(LoginRequiredMixin, TemplateView):
 class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     template_name = 'snsapp/update.html'
-     orm_class = PostForm 
+    form_class = PostForm 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -136,6 +136,15 @@ class ConfirmDeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if "confirm" in request.POST:
             return self.delete(request, *args, **kwargs)
         return super().get(request, *args, **kwargs)
+
+class Search(LoginRequiredMixin, View):
+    def get(self, request, *arg, **kwargs):
+        post_data = Post.objects.order_by('-id')
+        keyword = request.GET.get('keyword')
+
+        if keyword:
+            exclusion_list = set([' ', '  '])
+            query_list = ''
 
 class CreateComment(LoginRequiredMixin, CreateView):
     model = Comment
