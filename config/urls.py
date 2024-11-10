@@ -2,20 +2,20 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
-from snsapp.urls import router as snsapp_router
+from snsapp.urls import router as snsapp_router  # snsapp_routerのimport
 
 urlpatterns = [
    path('admin/', admin.site.urls),
    path('account/', include('account.urls')),  # accountアプリケーションのURLパターンを追加
-   path('', include('snsapp.urls')), 
+   path('snsapp/', include('snsapp.urls')),  # accountアプリケーションのURLパターンを追加
    path('markdownx/', include('markdownx.urls')), 
    path('api/', include(snsapp_router.urls)),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns += static(
-    settings.MEDIA_URL,
-    document_root=settings.MEDIA_ROOT
-)
+# urlpatterns += static(
+#     settings.MEDIA_URL,
+#     document_root=settings.MEDIA_ROOT
+# )
 
 # itounaohiro@itounaohironoMacBook-Pro snsproject % python3 manage.py createsuperuser
 # ユーザー名 (leave blank to use 'itounaohiro'): NI_Django
