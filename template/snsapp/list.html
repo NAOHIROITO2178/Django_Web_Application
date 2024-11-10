@@ -7,18 +7,6 @@
 
 {% block content %}
 <div class="container mt-3">
-  <div class="row">
-      {% for article in news %}
-      <div class="col-md-3">
-          <div class="alert alert-info" role="alert"> <!-- 背景色を変更 -->
-              <h5><b>今日のテックニュース</b></h5>
-              <p>タイトル：<a href="{{ article.url }}">{{ article.title }}</a></p>
-              <p>投稿者：{{ article.author }}</p>   
-          </div>
-      </div>
-      {% endfor %}
-  </div>
-
   <h2>ユーザ投稿一覧</h2>
   <div class="row">
     {% for item in object_list %}
