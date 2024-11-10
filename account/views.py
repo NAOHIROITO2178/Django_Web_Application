@@ -85,8 +85,6 @@ class UserUpdate(OnlyYouMixin, generic.UpdateView):
         # 初期値としてサインアップ時の値をフォームに表示
         initial = super().get_initial()
         user = self.get_object()
-        initial['bio'] = user.bio
-        initial['job_title'] = user.job_title
         return initial
 
 '''パスワード変更'''
