@@ -39,14 +39,6 @@ class SignupForm(UserCreationForm):
 
 '''ユーザー情報更新用フォーム'''
 class UserUpdateForm(forms.ModelForm):
-    bio = forms.CharField(
-        max_length=1000,
-        widget=forms.Textarea(attrs={
-            'class': 'form-control',
-            'placeholder': '自己紹介文を入力してください（1000文字以内）'
-        }),
-        required=False
-    )
     job_title = forms.ChoiceField(
         choices=[
             ('Non_selected', ''),
@@ -67,7 +59,7 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'bio', 'job_title')
+        fields = ('email', 'username',)
 
     # bootstrap4対応
     def __init__(self, *args, **kwargs):
