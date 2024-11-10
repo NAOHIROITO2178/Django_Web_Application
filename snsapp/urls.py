@@ -1,11 +1,5 @@
 from django.urls import path
-from .views import (
-    PostViewSet, ConnectionViewSet, CommentViewSet, TagViewSet,
-    Home, MyPost, DetailPost, CreatePost, ConfirmCreatePost,
-    UpdatePost, ConfirmUpdatePost, ConfirmDeletePost, LikeHome,
-    LikeDetail, CreateComment, UpdateComment, DeleteComment,
-    TaggedPosts, ConfirmCreateComment, ConfirmUpdateComment
-)
+from .views import PostViewSet, ConnectionViewSet, CommentViewSet, TagViewSet, Home, MyPost, DetailPost, CreatePost, ConfirmCreatePost, UpdatePost, ConfirmUpdatePost, ConfirmDeletePost, LikeHome, LikeDetail, CreateComment, UpdateComment, DeleteComment, TaggedPosts, ConfirmCreateComment, ConfirmUpdateComment
 from rest_framework.routers import SimpleRouter
 
 router = SimpleRouter()

@@ -2,12 +2,10 @@ from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import View
 from django.contrib.auth.models import User
-from django.views.generic import (
-    ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
-)
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
-from .forms import CommentForm, PostForm  # forms.py内のフォームをインポート
-# 必要なクラスベースビューをここに定義
+from django import forms
+from .forms import CommentForm  # CommentForm をインポート
 import django_filters
 from rest_framework import viewsets, filters
 from .models import Post, Connection, Comment, Tag
