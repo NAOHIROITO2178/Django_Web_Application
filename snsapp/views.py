@@ -45,7 +45,7 @@ class DetailPost(LoginRequiredMixin, DetailView):
 class CreatePost(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'snsapp/create.html'
-    fields = ['title', 'content']
+    form_class = PostForm 
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -78,7 +78,7 @@ class ConfirmCreatePost(LoginRequiredMixin, TemplateView):
 class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     template_name = 'snsapp/update.html'
-    fields = ['title', 'content']
+     orm_class = PostForm 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
