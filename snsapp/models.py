@@ -2,19 +2,28 @@ from django.db import models
 from django.contrib.auth.models import User
 from markdownx.models import MarkdownxField
 
-class Tag(models.Model):
-    name = models.CharField(max_length=50)
+# class Tag(models.Model):
+#     name = models.CharField(max_length=50)
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 class Post(models.Model):
+   CATEGORY_CHOICES = [
+       ('article', '記事'),
+       ('recruitment', '採用広報'),
+       ('question', '質問'),
+       ('recruit', '募集'),
+       ('other', 'その他'),
+   ]
+
+   category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='article')  # カテゴリを追加
    title = models.CharField(max_length=100)
    content = MarkdownxField('本文', help_text='Markdown形式で書いてください。')
    user = models.ForeignKey(User, on_delete=models.CASCADE)
    like = models.ManyToManyField(User, related_name='related_post', blank=True)
    created_at = models.DateTimeField(auto_now_add=True)
-   tag = models.ManyToManyField(Tag)
+#    tag = models.ManyToManyField(Tag)
 
    def __str__(self):
        return self.title

@@ -8,10 +8,10 @@ from django import forms
 from .forms import PostForm, CommentForm  # CommentForm をインポート
 import django_filters
 from rest_framework import viewsets, filters
-from .models import Post, Connection, Comment, Tag
+from .models import Post, Connection, Comment
 from django.http import Http404
 import requests
-from .serializer import PostSerializer, ConnectionSerializer, CommentSerializer, TagSerializer
+from .serializer import PostSerializer, ConnectionSerializer, CommentSerializer # TagSerializer
 
 # pk はプライマリキーの略で、データベースの各レコードのユニークな名前です。 Post モデルでプライマリキーを指定しなかったので、
 # Djangoは私たちのために1つのキーを作成し（デフォルトでは、各レコードごとに1ずつ増える数字で、たとえば1、2、3です）、
@@ -49,14 +49,14 @@ class CreatePost(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         instance = form.save()
 
-        # ハッシュタグの追加
-        tags_input = self.request.POST.get('tags', '')  # フォームからハッシュタグの文字列を取得
-        tags_list = tags_input.split()  # スペースで区切ってリストに変換
-        for tag_name in tags_list:
-            if tag_name.startswith('#'):  # ハッシュタグの場合
-                tag_name = tag_name[1:]  # ハッシュタグ記号を削除
-                tag, created = Tag.objects.get_or_create(name=tag_name)
-                instance.tag.add(tag)
+        # # ハッシュタグの追加
+        # tags_input = self.request.POST.get('tags', '')  # フォームからハッシュタグの文字列を取得
+        # tags_list = tags_input.split()  # スペースで区切ってリストに変換
+        # for tag_name in tags_list:
+        #     if tag_name.startswith('#'):  # ハッシュタグの場合
+        #         tag_name = tag_name[1:]  # ハッシュタグ記号を削除
+        #         tag, created = Tag.objects.get_or_create(name=tag_name)
+        #         instance.tag.add(tag)
 
         return super().form_valid(form)
 
@@ -80,22 +80,22 @@ class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['selected_tags'] = self.object.tag.all()
+        # context['selected_tags'] = self.object.tag.all()
         return context
     
     def form_valid(self, form):
         instance = form.save(commit=False)
 
-        # 既存のタグをクリアして、新しいタグを追加する
-        instance.tag.clear()
+        # # 既存のタグをクリアして、新しいタグを追加する
+        # instance.tag.clear()
 
-         # 既存のタグの処理
-        tags_input = self.request.POST.get('tags', '')  # 入力フィールドから既存のタグを取得
-        tags_list = tags_input.split()  # スペースで区切ってリストに変換
-        for tag_name in tags_list:
-            tag_name = tag_name.strip('#')  # ハッシュタグ記号を削除
-            tag, created = Tag.objects.get_or_create(name=tag_name)
-            instance.tag.add(tag)
+        #  # 既存のタグの処理
+        # tags_input = self.request.POST.get('tags', '')  # 入力フィールドから既存のタグを取得
+        # tags_list = tags_input.split()  # スペースで区切ってリストに変換
+        # for tag_name in tags_list:
+        #     tag_name = tag_name.strip('#')  # ハッシュタグ記号を削除
+        #     tag, created = Tag.objects.get_or_create(name=tag_name)
+        #     instance.tag.add(tag)
 
         return super().form_valid(form)
 
@@ -158,12 +158,12 @@ class CreateComment(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         form.instance.post = get_object_or_404(Post, pk=self.kwargs['pk'])
         text = form.cleaned_data.get("text", "")  # "text"キーが存在するかチェックして取得
-        words = text.split()        
-        for word in words:
-            if word.startswith("#"):  # 文字列の先頭が "#" かどうかを確認
-                tag_name = word[1:]  # "#" を取り除いたタグ名
-                tag, created = Tag.objects.get_or_create(name=tag_name)  # 存在しない場合は新規作成
-                form.instance.post.tag.add(tag)
+        # words = text.split()        
+        # for word in words:
+        #     if word.startswith("#"):  # 文字列の先頭が "#" かどうかを確認
+        #         tag_name = word[1:]  # "#" を取り除いたタグ名
+        #         tag, created = Tag.objects.get_or_create(name=tag_name)  # 存在しない場合は新規作成
+        #         form.instance.post.tag.add(tag)
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -198,12 +198,12 @@ class UpdateComment(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         comment = self.get_object()  # 現在のコメントオブジェクトを取得
         text = comment.content  # コメントのテキストを取得
-        words = text.split()
-        for word in words:
-            if word.startswith("#"):
-                tag_name = word[1:]
-                tag, created = Tag.objects.get_or_create(name=tag_name)
-                comment.post.tag.add(tag)  # コメントが属する投稿のタグに追加
+        # words = text.split()
+        # for word in words:
+        #     if word.startswith("#"):
+        #         tag_name = word[1:]
+        #         tag, created = Tag.objects.get_or_create(name=tag_name)
+        #         comment.post.tag.add(tag)  # コメントが属する投稿のタグに追加
         return reverse_lazy('snsapp:confirm_update_comment', kwargs={'pk': comment.pk})
 
     def test_func(self):
@@ -277,25 +277,25 @@ class TaggedPosts(ListView):
     template_name = 'snsapp/tagged_posts.html'
     context_object_name = 'object_list'
 
-    def get_queryset(self):
-        tag_name = self.kwargs['tag']
-        try:
-            tag = Tag.objects.get(name=tag_name)
-        except Tag.DoesNotExist:
-            raise Http404("Tag does not exist")
+    # def get_queryset(self):
+    #     tag_name = self.kwargs['tag']
+    #     try:
+    #         tag = Tag.objects.get(name=tag_name)
+    #     except Tag.DoesNotExist:
+    #         raise Http404("Tag does not exist")
 
-        return tag.post_set.all()
+    #     return tag.post_set.all()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        tag_name = self.kwargs['tag']
-        context['tag_name'] = tag_name
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     tag_name = self.kwargs['tag']
+    #     context['tag_name'] = tag_name
+    #     return context
 
 #ここからAPIのViewSetの定義
-class TagViewSet(viewsets.ModelViewSet):
-    queryset = Tag.objects.all()
-    serializer_class = TagSerializer
+# class TagViewSet(viewsets.ModelViewSet):
+#     queryset = Tag.objects.all()
+#     serializer_class = TagSerializer
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()

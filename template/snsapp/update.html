@@ -7,6 +7,10 @@
             <form method="post" class="border p-4">
                 {% csrf_token %}
                 <div class="form-group">
+                    <label for="id_category">カテゴリ</label>
+                    {{ form.category }}  <!-- カテゴリのセレクトボックス -->
+                </div>
+                <div class="form-group">
                     {{ form.title.label_tag }}
                     {{ form.title }}
                 </div>
@@ -14,11 +18,11 @@
                     <label for="id_content">本文</label>
                     {{ form.content }}
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="id_tags">ハッシュタグ (複数の場合はスペースで区切って入力)</label>
                     <input type="text" name="tags" id="id_tags" class="form-control" value="{% for tag in selected_tags %}#{{ tag.name }} {% endfor %}">
                     <small class="form-text text-muted">既存のタグを更新、新しいタグを追加、既存のタグを削除することができます。</small>
-                </div>
+                </div> -->
                 <button type="submit" class="btn btn-primary mt-3">編集</button>
             </form>
         </div>

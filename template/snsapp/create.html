@@ -8,6 +8,10 @@
             <form method="post" class="border p-4">
                 {% csrf_token %}
                 <div class="form-group">
+                    <label for="id_category">カテゴリ</label>
+                    {{ form.category }}
+                </div>
+                <div class="form-group">
                     {{ form.title.label_tag }}
                     {{ form.title }}
                 </div>
@@ -15,10 +19,10 @@
                     <label for="id_content">本文</label>
                     {{ form.content }}
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="id_tags">ハッシュタグ (複数の場合はスペースで区切って入力)</label>
                     <input type="text" name="tags" id="id_tags" class="form-control">
-                </div>
+                </div> -->
                 <button type="submit" class="btn btn-primary mt-3">投稿</button>
             </form>
         </div>
