@@ -8,7 +8,7 @@
 {% block content %}
 <div class="container">
   <div class="alert alert-success" role="alert">
-      <p>タイトル：{{object.category}}</p>
+      <p>カテゴリ：{{object.category}}</p>
       <p>タイトル：{{object.title}}</p>
       <p>投稿者：{{object.user}}</p>
       <p>投稿内容：{{ object.content | markdown_to_html | safe }}</p>

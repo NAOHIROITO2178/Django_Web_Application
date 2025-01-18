@@ -8,6 +8,7 @@
 {% block content %}
 <div class="container mt-4">
     <div class="alert alert-success" role="alert">
+        <p>タイトル：{{ post.category }}</p>
         <p>タイトル：{{ post.title }}</p>
         <p>投稿者：{{ post.user}}</p>
         <p>投稿内容：{{ post.content | markdown_to_html | safe }}</p>
