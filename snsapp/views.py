@@ -25,10 +25,6 @@ class Home(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-     def get_queryset(self):
-     #すべてのユーザーの投稿を表示
-       return Post.objects.all(user=self.request.user)
       
 class MyPost(LoginRequiredMixin, ListView):
    """自分の投稿のみ表示"""
