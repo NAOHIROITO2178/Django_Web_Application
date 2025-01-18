@@ -145,7 +145,7 @@ class FollowDetail(FollowBase):
 class FollowList(LoginRequiredMixin, ListView):
    """フォローしたユーザーの投稿をリスト表示"""
    model = Post
-   template_name = 'snsapp/list.html'
+   template_name = 'snsapp/follow_list.html'
 
    def get_queryset(self):
       """フォローリスト内にユーザーが含まれている場合のみクエリセット返す"""

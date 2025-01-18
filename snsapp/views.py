@@ -25,11 +25,15 @@ class Home(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+     def get_queryset(self):
+     #すべてのユーザーの投稿を表示
+       return Post.objects.all(user=self.request.user)
       
 class MyPost(LoginRequiredMixin, ListView):
    """自分の投稿のみ表示"""
    model = Post
-   template_name = 'snsapp/list.html'
+   template_name = 'snsapp/mypost.html'
 
    def get_queryset(self):
      #自分の投稿に限定
@@ -49,7 +53,7 @@ class CreatePost(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         instance = form.save()
 
-        # # ハッシュタグの追加
+        # ハッシュタグの追加
         # tags_input = self.request.POST.get('tags', '')  # フォームからハッシュタグの文字列を取得
         # tags_list = tags_input.split()  # スペースで区切ってリストに変換
         # for tag_name in tags_list:
