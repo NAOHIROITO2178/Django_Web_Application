@@ -7,7 +7,32 @@
 
 {% block content %}
 <div class="container mt-3">
-  <h2>ユーザ投稿一覧</h2>
+  <h2>ホーム</h2>
+  <div class="container mt-4">
+    <h5 class="mb-4">今日のITニュース</h5>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+      {% for item in news %}
+      <div class="col">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">{{ item.title }}</h5>
+            <a href="{{ item.link }}" class="btn btn-primary mt-3" target="_blank">詳細を見る</a>
+          </div>
+          <div class="card-footer text-muted text-end">
+            {{ item.time|date:"Y年m月d日 H:i" }}
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col text-center">
+        <div class="alert alert-info w-100" role="alert">
+          まだニュースはありません。
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  
   <div class="row">
     {% for item in object_list %}
     <div class="col-md-3">
