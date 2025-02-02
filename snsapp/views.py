@@ -8,7 +8,7 @@ from django import forms
 from .forms import PostForm, CommentForm  # CommentForm をインポート
 import django_filters
 from rest_framework import viewsets, filters
-from .models import Post, Connection, Comment, News
+from .models import Post, Connection, Comment
 from django.http import Http404
 import requests
 from .serializer import PostSerializer, ConnectionSerializer, CommentSerializer # TagSerializer
@@ -17,16 +17,15 @@ from .serializer import PostSerializer, ConnectionSerializer, CommentSerializer 
 # Djangoは私たちのために1つのキーを作成し（デフォルトでは、各レコードごとに1ずつ増える数字で、たとえば1、2、3です）、
 # 各投稿に pk というフィールド名で追加します。
 
+
 class Home(LoginRequiredMixin, ListView):
+    """HOMEページで、日本語のIT・Web業界関連の新着ニュースを表示"""
     model = Post
     template_name = 'snsapp/list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # 必ずしもニュースが表示されることを保証するものではない
-        context['news'] = News.objects.all().order_by('-time')[:4] if News.objects.exists() else []
-        return context
-
+      
 class MyPost(LoginRequiredMixin, ListView):
    """自分の投稿のみ表示"""
    model = Post
