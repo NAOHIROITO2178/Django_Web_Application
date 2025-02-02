@@ -7,6 +7,6 @@
   <form method="post">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">削除</button>
-    <a href="{% url 'account:my_page' user.pk %}" class="btn btn-secondary">キャンセル</a>
+    <a href="{% url 'account:my_page' %}" class="btn btn-secondary">キャンセル</a>
   </form>
 {% endblock %}
