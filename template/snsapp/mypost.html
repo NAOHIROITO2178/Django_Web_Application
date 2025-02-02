@@ -14,8 +14,8 @@
       <div class="alert alert-success" role="alert">
          <p>カテゴリ：{{item.category}}</p>
          <p>タイトル：<a href="{% url 'snsapp:detail' item.pk %}">{{item.title}}</a></p>
-         <p>投稿者：{{item.user.username}}</p>   
-   
+         <p>投稿者：<a href="{% if user == item.user %}{% url 'account:my_page' %}{% else %}{% url 'account:user_page' item.user.pk %}{% endif %}">{{item.user.username}}</a></p>   
+         
          {% if item.tag.all %}
          <p>
            ハッシュタグ:

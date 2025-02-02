@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, resolve_url # 追加
+from django.shortcuts import render, redirect, resolve_url, get_object_or_404 # 追加
 from django.views import generic
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView # 追加
 from django.contrib.auth import get_user_model # 追加
@@ -40,11 +40,21 @@ class OnlyYouMixin(UserPassesTestMixin):
         return user.pk == self.kwargs['pk']
 
 
-'''マイページ'''
-class MyPage(OnlyYouMixin, generic.DetailView):
+class MyPage(LoginRequiredMixin, generic.DetailView):
     model = User
     template_name = 'account/my_page.html'
-    # モデル名小文字(user)でモデルインスタンスがテンプレートファイルに渡される
+    
+    def get_object(self):
+        # ログインしているユーザーの情報を取得
+        return self.request.user
+
+class UserPage(generic.DetailView):
+    model = User
+    template_name = 'account/user_page.html'
+    
+    def get_object(self):
+        # 他のユーザーの情報を取得
+        return get_object_or_404(User, pk=self.kwargs['pk'])
 
 '''サインアップ'''
 class Signup(generic.CreateView):

@@ -17,15 +17,14 @@ from .serializer import PostSerializer, ConnectionSerializer, CommentSerializer 
 # Djangoは私たちのために1つのキーを作成し（デフォルトでは、各レコードごとに1ずつ増える数字で、たとえば1、2、3です）、
 # 各投稿に pk というフィールド名で追加します。
 
-
 class Home(LoginRequiredMixin, ListView):
-    """HOMEページで、日本語のIT・Web業界関連の新着ニュースを表示"""
     model = Post
     template_name = 'snsapp/list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-      
+        return context
+
 class MyPost(LoginRequiredMixin, ListView):
    """自分の投稿のみ表示"""
    model = Post

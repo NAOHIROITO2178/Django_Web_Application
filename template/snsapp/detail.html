@@ -10,7 +10,7 @@
   <div class="alert alert-success" role="alert">
       <p>カテゴリ：{{object.category}}</p>
       <p>タイトル：{{object.title}}</p>
-      <p>投稿者：{{object.user}}</p>
+      <p>投稿者：<a href="{% if user == object.user %}{% url 'account:my_page' %}{% else %}{% url 'account:user_page' object.user.pk %}{% endif %}">{{object.user.username}}</a></p>   
       <p>投稿内容：{{ object.content | markdown_to_html | safe }}</p>
       
       {% if object.tag.all %}

@@ -31,7 +31,7 @@
               <a class="nav-link" href="{% url 'account:login' %}">ログイン</a>
               <a class="nav-link" href="{% url 'account:signup' %}">サインアップ</a>
               {% else %}
-              <a class="nav-link" href="{% url 'account:my_page' request.user.pk %}">マイページ</a>
+              <a class="nav-link" href="{% url 'account:my_page' %}">マイページ</a>
               <form action="{% url 'account:logout' %}" method="post">
                 {% csrf_token %}
                 <button type="submit" class="nav-link btn btn-link">ログアウト</button>
