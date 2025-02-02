@@ -33,7 +33,7 @@
                 <p>{{ comment.content | markdown_to_html | safe }}</p>
             </div>
             <div class="mt-4">
-                <a href="{% url 'snsapp:create' %}" class="btn btn-secondary">戻る</a>
+                <a href="{% url 'snsapp:comment-create' post.pk %}" class="btn btn-secondary">戻る</a>
                 <a href="{% url 'snsapp:detail'  post.pk %}" class="btn btn-primary">コメント投稿を確認</a>
             </div>
         </div>
