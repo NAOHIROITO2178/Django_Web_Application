@@ -18,7 +18,7 @@ class Post(models.Model):
    ]
 
    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='article')  # カテゴリを追加
-   title = models.CharField(max_length=100)
+   title = models.CharField('タイトル',max_length=100)
    content = MarkdownxField('本文', help_text='Markdown形式で書いてください。')
    user = models.ForeignKey(User, on_delete=models.CASCADE)
    like = models.ManyToManyField(User, related_name='related_post', blank=True)
