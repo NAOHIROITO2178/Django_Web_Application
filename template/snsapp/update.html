@@ -24,6 +24,7 @@
                     <input type="text" name="tags" id="id_tags" class="form-control" value="{% for tag in selected_tags %}#{{ tag.name }} {% endfor %}">
                     <small class="form-text text-muted">既存のタグを更新、新しいタグを追加、既存のタグを削除することができます。</small>
                 </div> -->
+                <a href="{% url 'snsapp:detail' post.pk %}" class="btn btn-secondary">キャンセル</a>
                 <button type="submit" class="btn btn-primary mt-3">編集</button>
             </form>
         </div>
