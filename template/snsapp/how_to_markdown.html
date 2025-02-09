@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load app %}
+{% load static %}
+{% block customcss %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css">
+<style>
+    .markdown-section {
+        margin-bottom: 30px;
+    }
+    .markdown-container {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
+    .markdown-example, .markdown-rendered {
+        flex: 1;
+        padding: 15px;
+        border: 1px solid #ccc;
+        background: #f8f8f8;
+        border-radius: 8px;
+        overflow-x: auto;
+    }
+    pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    table, th, td {
+        border: 1px solid black;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+    }
+</style>
+{% endblock customcss %}
+
+{% block content %}
+<div class="container">
+    <h1>Markdown ガイドライン</h1>
+
+    {% for example in markdown_examples %}
+    <div class="markdown-section">
+        <h2>{{ example.title }}</h2>
+        <div class="markdown-container">
+            <!-- マークダウンの記述例 -->
+            <div class="markdown-example">
+                <h3>記述</h3>
+                <pre>{{ example.markdown }}</pre>
+            </div>
+
+            <!-- マークダウンのレンダリング結果 -->
+            <div class="markdown-rendered">
+                <h3>表示</h3>
+                <div class="markdown-content">
+                    {{ example.html | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+{% endblock content %}

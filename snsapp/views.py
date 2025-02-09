@@ -10,7 +10,7 @@ import django_filters
 from rest_framework import viewsets, filters
 from .models import Post, Connection, Comment
 from django.http import Http404
-import requests
+import requests, markdown
 from .serializer import PostSerializer, ConnectionSerializer, CommentSerializer # TagSerializer
 
 # pk はプライマリキーの略で、データベースの各レコードのユニークな名前です。 Post モデルでプライマリキーを指定しなかったので、
@@ -243,6 +243,58 @@ class DeleteComment(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         comment = self.get_object()
         return self.request.user == comment.user
 
+class HowToMakdown(LoginRequiredMixin, TemplateView):
+    template_name = 'snsapp/how_to_markdown.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # 記述例とレンダリング結果のペア
+        markdown_examples = [
+            {
+                "title": "見出し",
+                "markdown": "# H1\n## H2\n### H3",
+            },
+            {
+                "title": "強調",
+                "markdown": "*イタリック*\n**ボールド**\n",
+            },
+            {
+                "title": "リスト",
+                "markdown": "- リストアイテム1\n- リストアイテム2\n  - ネストされたリスト",
+            },
+            {
+                "title": "番号付きリスト",
+                "markdown": "1. 番号付きリスト1\n2. 番号付きリスト2",
+            },
+            {
+                "title": "コードブロック",
+                "markdown": "```\nprint('Hello, Markdown!')\n```",
+            },
+            {
+                "title": "リンク",
+                "markdown": "[Google](https://www.google.com)",
+            },
+            {
+                "title": "画像",
+                "markdown": "![サンプル画像](https://via.placeholder.com/150)",
+            },
+            {
+                "title": "引用",
+                "markdown": "> これは引用です。\n>> ネストされた引用",
+            },
+            {
+                "title": "表",
+                "markdown": "| 見出し1 | 見出し2 |\n|--------|--------|\n| 内容1  | 内容2  |\n| 内容3  | 内容4  |",
+            },
+        ]
+
+        # 各マークダウンの記述例をHTMLに変換
+        for item in markdown_examples:
+            item["html"] = markdown.markdown(item["markdown"], extensions=['fenced_code', 'codehilite', 'tables', 'extra'])
+
+        context['markdown_examples'] = markdown_examples
+        return context
 
 class LikeBase(LoginRequiredMixin, View):
    """いいねのベース。リダイレクト先を以降で継承先で設定"""

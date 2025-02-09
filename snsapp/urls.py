@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostViewSet, ConnectionViewSet, CommentViewSet, Home, MyPost, DetailPost, CreatePost, ConfirmCreatePost, UpdatePost, ConfirmUpdatePost, ConfirmDeletePost, LikeHome, LikeDetail, CreateComment, UpdateComment, DeleteComment, TaggedPosts, ConfirmCreateComment, ConfirmUpdateComment
+from .views import PostViewSet, ConnectionViewSet, CommentViewSet, Home, MyPost, DetailPost, CreatePost, ConfirmCreatePost, UpdatePost, ConfirmUpdatePost, ConfirmDeletePost, LikeHome, LikeDetail, CreateComment, UpdateComment, DeleteComment, HowToMakdown, TaggedPosts, ConfirmCreateComment, ConfirmUpdateComment
 from rest_framework.routers import SimpleRouter
 
 router = SimpleRouter()
@@ -28,5 +28,6 @@ urlpatterns += [
    path('comment-update/<int:pk>/', UpdateComment.as_view(), name='comment-update'),
    path('comment-update_confirm/<int:pk>/', ConfirmUpdateComment.as_view(), name='confirm_update_comment'),
    path('comment-delete/<int:pk>/', DeleteComment.as_view(), name='comment-delete'),
+   path('how_to_markown/', HowToMakdown.as_view(), name='how_to_markown'),
    path('tag/<str:tag>/', TaggedPosts.as_view(), name='tagged-posts'),
 ]
