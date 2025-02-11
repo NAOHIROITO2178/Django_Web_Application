@@ -48,15 +48,6 @@ class CreatePost(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         instance = form.save()
 
-        # ハッシュタグの追加
-        # tags_input = self.request.POST.get('tags', '')  # フォームからハッシュタグの文字列を取得
-        # tags_list = tags_input.split()  # スペースで区切ってリストに変換
-        # for tag_name in tags_list:
-        #     if tag_name.startswith('#'):  # ハッシュタグの場合
-        #         tag_name = tag_name[1:]  # ハッシュタグ記号を削除
-        #         tag, created = Tag.objects.get_or_create(name=tag_name)
-        #         instance.tag.add(tag)
-
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -84,17 +75,6 @@ class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     
     def form_valid(self, form):
         instance = form.save(commit=False)
-
-        # # 既存のタグをクリアして、新しいタグを追加する
-        # instance.tag.clear()
-
-        #  # 既存のタグの処理
-        # tags_input = self.request.POST.get('tags', '')  # 入力フィールドから既存のタグを取得
-        # tags_list = tags_input.split()  # スペースで区切ってリストに変換
-        # for tag_name in tags_list:
-        #     tag_name = tag_name.strip('#')  # ハッシュタグ記号を削除
-        #     tag, created = Tag.objects.get_or_create(name=tag_name)
-        #     instance.tag.add(tag)
 
         return super().form_valid(form)
 
@@ -157,12 +137,7 @@ class CreateComment(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         form.instance.post = get_object_or_404(Post, pk=self.kwargs['pk'])
         text = form.cleaned_data.get("text", "")  # "text"キーが存在するかチェックして取得
-        # words = text.split()        
-        # for word in words:
-        #     if word.startswith("#"):  # 文字列の先頭が "#" かどうかを確認
-        #         tag_name = word[1:]  # "#" を取り除いたタグ名
-        #         tag, created = Tag.objects.get_or_create(name=tag_name)  # 存在しない場合は新規作成
-        #         form.instance.post.tag.add(tag)
+        
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -197,12 +172,7 @@ class UpdateComment(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         comment = self.get_object()  # 現在のコメントオブジェクトを取得
         text = comment.content  # コメントのテキストを取得
-        # words = text.split()
-        # for word in words:
-        #     if word.startswith("#"):
-        #         tag_name = word[1:]
-        #         tag, created = Tag.objects.get_or_create(name=tag_name)
-        #         comment.post.tag.add(tag)  # コメントが属する投稿のタグに追加
+       
         return reverse_lazy('snsapp:confirm_update_comment', kwargs={'pk': comment.pk})
 
     def test_func(self):
