@@ -9,8 +9,8 @@ urlpatterns = [
     # ログインユーザーのマイページ
     path('my_page/', views.MyPage.as_view(), name='my_page'),  # pk不要で自分のページを表示 
     # 他のユーザーのマイページ
+    path('my_page_update/', views.MyPageUpdate.as_view(), name='my_page_update'),  # pk不要で自分のページの情報を更新
     path('user_page/<int:pk>/', views.UserPage.as_view(), name='user_page'),  # 他ユーザーのページ
-    path('user_update/<int:pk>', views.UserUpdate.as_view(), name='user_update'),
     path('signup/', views.Signup.as_view(), name='signup'), # サインアップ
     path('signup_done/', views.SignupDone.as_view(), name='signup_done'), # サインアップ完了
     path('password_change/', views.PasswordChange.as_view(), name='password_change'), # パスワード変更

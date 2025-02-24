@@ -37,7 +37,7 @@ class OnlyYouMixin(UserPassesTestMixin):
     def test_func(self):
         # 今ログインしてるユーザーのpkと、そのマイページのpkが同じなら許可
         user = self.request.user
-        return user.pk == self.kwargs['pk']
+        return user.is_authenticated
 
 
 class MyPage(LoginRequiredMixin, generic.DetailView):
@@ -77,14 +77,21 @@ class SignupDone(generic.TemplateView):
     template_name = 'account/signup_done.html'
 
 '''ユーザー登録情報の更新'''
-class UserUpdate(OnlyYouMixin, generic.UpdateView):
+class MyPageUpdate(OnlyYouMixin, generic.UpdateView):
     model = User
     form_class = UserUpdateForm
     template_name = 'account/user_form.html'
 
-    def get_success_url(self):
-        return resolve_url('account:my_page', pk=self.kwargs['pk'])
+    def form_valid(self, form):
+        user = form.save(commit=False)  # データを保存せずに取得
+        user.save()  # 明示的に保存
+        return super().form_valid(form)
 
+    def get_success_url(self):
+        return resolve_url('account:my_page')
+
+    def get_object(self, queryset=None):
+        return self.request.user  # 現在のログインユーザーを返す
     # contextデータ作成
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
