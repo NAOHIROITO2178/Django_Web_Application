@@ -2,18 +2,18 @@
 
 {% block content %}
 <div class="container">
-  <h1>{{ user.username }} のページ</h1>
-  <hr>
-
-  <!-- 他のユーザーの情報 -->
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td>ユーザー名</td>
-        <td>{{ user.username }}</td>
-      </tr>
-    </tbody>
-  </table>
-
+  <div class="profile-header">
+      {% if user.self_image %}
+          <img src="{{ user.self_image.url }}" alt="プロフィール画像" class="profile-image">
+      {% else %}
+          <img src="{% static 'default_profile.png' %}" alt="デフォルトプロフィール画像" class="profile-image">
+      {% endif %}
+      <h2>{{ user.username }}</h2>
+      <h4>{{ user.job_category|default:"未登録" }}</h4>
+  </div>
+  <div class="profile-body">
+      <h5>自己紹介</h5>
+      <p>{{ user.self_introduction|default:"未登録" }}</p>
+  </div>
 </div>
 {% endblock %}

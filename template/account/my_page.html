@@ -9,19 +9,27 @@
   <!-- アカウント情報 -->
   <div class="row">
     <div class="col"><h4>■　登録情報</h4></div>
-    <div class="col text-right"><a href="{% url 'account:user_update' user.pk %}">更新</a></div>
+    <div class="col text-right"><a href="{% url 'account:my_page_update' %}">更新</a></div>
     <div class="col text-right"><a href="{% url 'account:password_change' %}">パスワードの更新</a></div>
     <div class="col text-right"><a href="{% url 'account:delete_account' user.pk %}" class="btn btn-danger">アカウントを削除する</a></div>
     <!-- 後で更新ボタン追加 -->
   </div>
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td>ユーザー名</td>
-        <td>{{ user.username }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="container">
+    <div class="profile-header">
+        {% if user.self_image %}
+            <img src="{{ user.self_image.url }}" alt="プロフィール画像" class="profile-image">
+        {% else %}
+            <img src="{% static 'default_profile.png' %}" alt="デフォルトプロフィール画像" class="profile-image">
+        {% endif %}
+        <h2>{{ user.username }}</h2>
+        <h4>{{ user.job_category|default:"未登録" }}</h4>
+    </div>
+    <div class="profile-body">
+        <h5>自己紹介</h5>
+        <p>{{ user.self_introduction|default:"未登録" }}</p>
+    </div>
+  </div>
+</div>
 
 </div>
 {% endblock %}
