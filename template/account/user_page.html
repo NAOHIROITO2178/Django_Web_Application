@@ -3,11 +3,13 @@
 {% block content %}
 <div class="container">
   <div class="profile-header">
-      {% if user.self_image %}
-          <img src="{{ user.self_image.url }}" alt="プロフィール画像" class="profile-image">
-      {% else %}
-          <img src="{% static 'default_profile.png' %}" alt="デフォルトプロフィール画像" class="profile-image">
-      {% endif %}
+      <div class="d-flex justify-content-center">
+        {% if user.self_image %}
+            <img src="{{ user.self_image.url }}" alt="プロフィール画像" class="profile-image">
+        {% else %}
+            <img src="{% static 'Images/default_profile.png' %}" alt="デフォルトプロフィール画像" class="profile-image">
+        {% endif %}
+      </div>
       <h2>{{ user.username }}</h2>
       <h4>{{ user.job_category|default:"未登録" }}</h4>
   </div>
