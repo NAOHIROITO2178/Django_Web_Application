@@ -30,12 +30,14 @@ INSTALLED_APPS = [
     'snsapp.apps.SnsappConfig', 
     'account.apps.AccountConfig', # ユーザー認証
     'django.forms',
+    'csp',
     'markdownx', 
     'rest_framework',
     'django_filters',
 ]
 
 MIDDLEWARE = [
+    'csp.middleware.CSPMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -82,7 +84,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'mydb',
         'USER': 'myuser',
         'PASSWORD': 'mypassword',
@@ -159,3 +161,13 @@ SITE_ID = 1
 
 LOGIN_URL = 'account:login'          
 LOGIN_REDIRECT_URL = 'snsapp:home'
+
+# Content Security Policy (CSP) 設定
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'", 'https://cdn.jsdelivr.net')
+CSP_STYLE_SRC = ("'self'", 'https://cdn.jsdelivr.net', 'https://use.fontawesome.com')
+CSP_IMG_SRC = ("'self'", 'data:')
+CSP_FONT_SRC = ("'self'", 'https://use.fontawesome.com')
+
+# インラインスクリプトやスタイルにnonceを適用
+CSP_INCLUDE_NONCE_IN = ('script-src', 'style-src')

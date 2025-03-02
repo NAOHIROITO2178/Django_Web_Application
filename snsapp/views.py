@@ -8,10 +8,10 @@ from django import forms
 from .forms import PostForm, CommentForm  # CommentForm をインポート
 import django_filters
 from rest_framework import viewsets, filters
-from .models import Post, Connection, Comment
+from .models import Tag, Post, Connection, Comment
 from django.http import Http404
 import requests, markdown
-from .serializer import PostSerializer, ConnectionSerializer, CommentSerializer # TagSerializer
+from .serializer import PostSerializer, ConnectionSerializer, CommentSerializer, TagSerializer
 
 # pk はプライマリキーの略で、データベースの各レコードのユニークな名前です。 Post モデルでプライマリキーを指定しなかったので、
 # Djangoは私たちのために1つのキーを作成し（デフォルトでは、各レコードごとに1ずつ増える数字で、たとえば1、2、3です）、
@@ -45,10 +45,21 @@ class CreatePost(LoginRequiredMixin, CreateView):
     form_class = PostForm 
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
-        instance = form.save()
-
-        return super().form_valid(form)
+        try:
+            form.instance.user = self.request.user
+            response = super().form_valid(form)
+            tags_str = form.cleaned_data.get('tags', '')
+            if tags_str:
+                tag_names = [name.strip() for name in tags_str.split(',')]
+                for name in tag_names:
+                    if not name.startswith('#'):
+                        name = f'#{name}'
+                    tag, created = Tag.objects.get_or_create(name=name)
+                    self.object.tags.add(tag)
+            return response
+        except Exception as e:
+            form.add_error(None, f'エラーが発生しました: {e}')
+            return self.form_invalid(form)
 
     def get_success_url(self):
         return reverse_lazy('snsapp:confirm_create', kwargs={'pk': self.object.pk})
@@ -68,15 +79,27 @@ class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'snsapp/update.html'
     form_class = PostForm 
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # context['selected_tags'] = self.object.tag.all()
-        return context
-    
-    def form_valid(self, form):
-        instance = form.save(commit=False)
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['tags'] = ', '.join([tag.name for tag in self.object.tags.all()])
+        return initial
 
-        return super().form_valid(form)
+    def form_valid(self, form):
+        try:
+            form.instance.user = self.request.user
+            response = super().form_valid(form)
+            tags_str = form.cleaned_data.get('tags', '')
+            if tags_str:
+                tag_names = [name.strip() for name in tags_str.split(',')]
+                for name in tag_names:
+                    if not name.startswith('#'):
+                        name = f'#{name}'
+                    tag, created = Tag.objects.get_or_create(name=name)
+                    self.object.tags.add(tag)
+            return response
+        except Exception as e:
+            form.add_error(None, f'エラーが発生しました: {e}')
+            return self.form_invalid(form)
 
     def test_func(self):
         return self.get_object().user == self.request.user
@@ -296,27 +319,22 @@ class LikeDetail(LikeBase):
 class TaggedPosts(ListView):
     model = Post
     template_name = 'snsapp/tagged_posts.html'
-    context_object_name = 'object_list'
+    context_object_name = 'posts'
 
-    # def get_queryset(self):
-    #     tag_name = self.kwargs['tag']
-    #     try:
-    #         tag = Tag.objects.get(name=tag_name)
-    #     except Tag.DoesNotExist:
-    #         raise Http404("Tag does not exist")
+    def get_queryset(self):
+        tag_name = self.kwargs['tag']
+        tag = get_object_or_404(Tag, name=tag_name)
+        return tag.posts.all()
 
-    #     return tag.post_set.all()
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     tag_name = self.kwargs['tag']
-    #     context['tag_name'] = tag_name
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag_name'] = self.kwargs['tag']
+        return context
 
 #ここからAPIのViewSetの定義
-# class TagViewSet(viewsets.ModelViewSet):
-#     queryset = Tag.objects.all()
-#     serializer_class = TagSerializer
+class TagViewSet(viewsets.ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()

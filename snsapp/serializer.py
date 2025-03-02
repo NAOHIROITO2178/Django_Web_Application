@@ -2,12 +2,12 @@
 
 from rest_framework import serializers
 
-from .models import Post, Connection, Comment
+from .models import Tag, Post, Connection, Comment
 
-# class TagSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Tag
-#         fields = '__all__' 
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = '__all__' 
 
 
 class PostSerializer(serializers.ModelSerializer):

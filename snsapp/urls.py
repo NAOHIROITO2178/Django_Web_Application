@@ -1,12 +1,12 @@
 from django.urls import path
-from .views import PostViewSet, ConnectionViewSet, CommentViewSet, Home, MyPost, DetailPost, CreatePost, ConfirmCreatePost, UpdatePost, ConfirmUpdatePost, ConfirmDeletePost, LikeHome, LikeDetail, CreateComment, UpdateComment, DeleteComment, HowToMakdown, TaggedPosts, ConfirmCreateComment, ConfirmUpdateComment
+from .views import TagViewSet, PostViewSet, ConnectionViewSet, CommentViewSet, Home, MyPost, DetailPost, CreatePost, ConfirmCreatePost, UpdatePost, ConfirmUpdatePost, ConfirmDeletePost, LikeHome, LikeDetail, CreateComment, UpdateComment, DeleteComment, HowToMakdown, TaggedPosts, ConfirmCreateComment, ConfirmUpdateComment
 from rest_framework.routers import SimpleRouter
 
 router = SimpleRouter()
 router.register('posts', PostViewSet)
 router.register('connections', ConnectionViewSet)
 router.register('comments', CommentViewSet)
-# router.register('tags', TagViewSet)
+router.register('tags', TagViewSet)
 
 urlpatterns = router.urls
 
@@ -17,7 +17,7 @@ urlpatterns += [
    path('mypost/', MyPost.as_view(), name='mypost'),   
    path('detail/<int:pk>/', DetailPost.as_view(), name='detail'),
    path('create/', CreatePost.as_view(), name='create'),
-   path('create_confirm/<int:pk>/', ConfirmCreatePost.as_view(), name='confirm_create'),
+   path('create/confirm/<int:pk>/', ConfirmCreatePost.as_view(), name='confirm_create'),
    path('detail/<int:pk>/update/', UpdatePost.as_view(), name='update'),
    path('detail/<int:pk>/update_confirm/', ConfirmUpdatePost.as_view(), name='confirm_update'),
    path('detail/<int:pk>/delete_confirm/', ConfirmDeletePost.as_view(), name='confirm_delete'),

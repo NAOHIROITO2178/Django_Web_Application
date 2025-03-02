@@ -19,6 +19,11 @@
                     <label for="id_content">本文</label>
                     {{ form.content }}
                 </div>
+                <div class="form-group">
+                    <label for="id_tags">タグ</label>
+                    {{ form.tags }}
+                    <small class="form-text text-muted">{{ form.tags.help_text }}</small>
+                </div>
                 <a href="{% url 'snsapp:detail' post.pk %}" class="btn btn-secondary">キャンセル</a>
                 <button type="submit" class="btn btn-primary mt-3">編集</button>
             </form>
